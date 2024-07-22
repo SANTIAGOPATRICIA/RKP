@@ -1,0 +1,5 @@
+# Ignorar o arquivo secrets.toml dentro do diretório streamlit
+streamlit/secrets.toml
+
+# Ignorar o arquivo client_secret.json
+client_secret.json
