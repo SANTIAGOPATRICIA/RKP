@@ -1,43 +1,151 @@
-# import streamlit as st
-# from st_pages import Page, Section, show_pages, add_page_title
-
-# add_page_title()
-
-
-# show_pages(
-#     [
-#         Section("consultivo", icon="🎈️"),
-#         Page(".\consultivo\consultivo.py","Proposta consultivo", icon="💪", in_section=True),
-#         Section("contencioso", icon="🎈️"),
-#         Page(".\contencioso\contencioso-proposta.py", icon="💪", in_section=True),
-#         Page(".\contencioso\contencioso-contrato.py", icon="💪", in_section=True),
-#         Section("Consultivo e contencioso", icon="🎈️"), 
-#         # Page(".\consultivo\modelo-consultivo-e-contencioso-propostas.py","Proposta consultivo e contencioso", icon="💪", in_section=True),
-#         Page(".\consultivo_contencioso\consultivo-contencioso.py", "Consultivo e contencioso", icon="💪", in_section= True),
-#         Section("Especial", icon="🎈️"),
-#         Page(".\Especial\especial.py", "Proteção patrimonial", icon="💪", in_section=True)
-#     ]
-# )
-
 import streamlit as st
-# from st_pages import Page, Section, show_pages, add_page_title
+import google.auth.transport.requests
+import google.oauth2.id_token
+from google_auth_oauthlib.flow import Flow
+import os
+import json
 
-# add_page_title()
+# # Configure os detalhes do cliente OAuth
+# CLIENT_SECRETS_FILE = "client_secret.json"  # Nome do arquivo com as credenciais
+# SCOPES = ["openid", "email", "profile"]
+# REDIRECT_URI = "http://localhost:8501/"
 
-# show_pages(
-#     [
-#         Section("Consultivo", icon="🎈"),
-#         Page(".\consultivo\consultivo.py", "Proposta Consultivo", icon="💪", in_section=True),
-#         Section("Contencioso", icon="🎈"),
-#         Page(".\contencioso\contencioso-proposta.py", "Proposta Contencioso", icon="💪", in_section=True),
-#         Page(".\contencioso\contencioso-contrato-preenchido.py", 'Contrato preenchido', in_section=True),
-#         Page(".\contencioso\contencioso-contrato.py", "Contrato Contencioso", icon="💪", in_section=True),
-#         Section("Consultivo e Contencioso", icon="🎈"),
-#         Page(".\consultivo_contencioso\consultivo-contencioso.py", "Consultivo e Contencioso", icon="💪", in_section=True),
-#         Section("Especial", icon="🎈"),
-#         Page(".\Especial\especial.py", "Proteção Patrimonial", icon="💪", in_section=True)
-#     ]
-# )
+# # Função para carregar as credenciais do cliente OAuth
+# def load_credentials():
+#     with open(CLIENT_SECRETS_FILE) as f:
+#         return json.load(f)
+
+# # Função para verificar o email do usuário
+# def verify_email(email, allowed_domain):
+#     domain = email.split('@')[-1]
+#     return domain == allowed_domain
+
+# # Função para iniciar o fluxo OAuth
+# def initiate_flow():
+#     credentials = load_credentials()
+#     flow = Flow.from_client_config(
+#         credentials,
+#         scopes=SCOPES
+#     )
+#     flow.redirect_uri = REDIRECT_URI
+#     auth_url, state = flow.authorization_url(prompt='consent')
+#     return auth_url, flow
+
+# # Função para obter o token do usuário
+# def get_token(flow, code):
+#     flow.fetch_token(code=code)
+#     credentials = flow.credentials
+#     return credentials.id_token
+
+# # Página principal do aplicativo Streamlit
+# def main():
+#     st.title("Google OAuth Login")
+
+#     # URL para iniciar o fluxo OAuth
+#     auth_url, flow = initiate_flow()
+
+#     # Mostrar botão de login
+#     if st.button("Login with Google"):
+#         st.markdown(f'<a href="{auth_url}" target="_self">Login with Google</a>', unsafe_allow_html=True)
+
+#     # Verificar se o código de autorização está presente
+#     if "code" in st.query_params:
+#         code = st.query_params["code"][0]
+#         id_token = get_token(flow, code)
+
+#         # Verificar o email do usuário
+#         request = google.auth.transport.requests.Request()
+#         idinfo = google.oauth2.id_token.verify_oauth2_token(id_token, request)
+#         email = idinfo['email']
+#         allowed_domain = "yourcompany.com"
+
+#         if verify_email(email, allowed_domain):
+#             st.success(f"Bem-vindo, {email}")
+#             # Continue com o restante do seu aplicativo
+#         else:
+#             st.error("Acesso negado. Apenas emails da organização são permitidos.")
+
+# if __name__ == "__main__":
+#     main()
+
+
+
+# import streamlit as st
+# import google.auth.transport.requests
+# import google.oauth2.id_token
+# from google_auth_oauthlib.flow import Flow
+# import os
+# import json
+# from urllib.parse import urlparse, parse_qs
+
+# # Configure os detalhes do cliente OAuth
+# CLIENT_SECRETS_FILE = "client_secret.json"  # Nome do arquivo com as credenciais
+# SCOPES = ["openid", "email", "profile"]
+# REDIRECT_URI = "http://localhost:8501/"  # Certifique-se de que este URI está configurado no Google Cloud Console
+
+# # Função para carregar as credenciais do cliente OAuth
+# def load_credentials():
+#     with open(CLIENT_SECRETS_FILE) as f:
+#         return json.load(f)
+
+# # Função para verificar o email do usuário
+# def verify_email(email, allowed_domain):
+#     domain = email.split('@')[-1]
+#     return domain == allowed_domain
+
+# # Função para iniciar o fluxo OAuth
+# def initiate_flow():
+#     credentials = load_credentials()
+#     flow = Flow.from_client_config(
+#         credentials,
+#         scopes=SCOPES
+#     )
+#     flow.redirect_uri = REDIRECT_URI
+#     auth_url, state = flow.authorization_url(prompt='consent')
+#     return auth_url, flow
+
+# # Função para obter o token do usuário
+# def get_token(flow, code):
+#     flow.fetch_token(code=code)
+#     credentials = flow.credentials
+#     return credentials.id_token
+
+# # Página principal do aplicativo Streamlit
+# def main():
+#     st.title("Google OAuth Login")
+
+#     # URL para iniciar o fluxo OAuth
+#     auth_url, flow = initiate_flow()
+
+#     # Mostrar botão de login
+#     if st.button("Login with Google"):
+#         st.markdown(f'<a href="{auth_url}" target="_self">Login with Google</a>', unsafe_allow_html=True)
+
+#     # Verificar se o código de autorização está presente
+#     query_params = st.query_params
+#     if "code" in query_params:
+#         code = query_params["code"][0]
+#         st.write(f"Authorization code: {code}")
+
+#         try:
+#             id_token = get_token(flow, code)
+#             st.write(f"ID Token: {id_token}")
+#             # Verificar o email do usuário
+#             request = google.auth.transport.requests.Request()
+#             idinfo = google.oauth2.id_token.verify_oauth2_token(id_token, request)
+#             email = idinfo['email']
+#             allowed_domain = "yourcompany.com"
+
+#             if verify_email(email, allowed_domain):
+#                 st.success(f"Bem-vindo, {email}")
+#                 # Continue com o restante do seu aplicativo
+#             else:
+#                 st.error("Acesso negado. Apenas emails da organização são permitidos.")
+#         except Exception as e:
+#             st.error(f"Erro ao obter o token: {e}")
+
+# if __name__ == "__main__":
+#     main()
 
 
 if "logged_in" not in st.session_state:
