@@ -23,12 +23,10 @@ authenticator.login()
 
 # Display the user information and logout button if the user is authenticated
 if st.session_state['connected']:
-#     st.image(st.session_state['user_info'].get('picture'))
-#     st.write(f"Hello, {st.session_state['user_info'].get('name')}")
-#     st.write(f"Your email is {st.session_state['user_info'].get('email')}")
-#     if st.button('Log out'):
-#         authenticator.logout()
-
+    # login = st.image(st.session_state['user_info'].get('picture'))
+    # st.write(f"Hello, {st.session_state['user_info'].get('name')}")
+    # st.write(f"Your email is {st.session_state['user_info'].get('email')}")
+    
     # Criar as páginas necessárias
     consultivo = st.Page(
         ".\consultivo\consultivo.py", 
@@ -56,17 +54,29 @@ if st.session_state['connected']:
         title="Proposta - Proteção Patrimonial", 
         icon="💪"
     )
+
+    # Criar uma página para logout
+    def logout_page():
+        st.write("Você está prestes a sair do aplicativo.")
+        if st.button('Log out'):
+            authenticator.logout()
+    
+    logout = st.Page(
+        logout_page,
+        title="Log out",
+        icon="🚪"
+    )
+
+    # Adicionar páginas ao menu de navegação
     pg = st.navigation(
         {
             "Consultivo": [consultivo, consultivo_contencioso],
             "Contencioso": [contencioso_proposta, contencioso_contrato],
-            "Especial": [especial]
+            "Especial": [especial],
+            "Sair": [logout]  # Adiciona a opção de logout como a última opção
         }
     )
 
     pg.run()
-
-    if st.button('Log out'):
-        authenticator.logout()
 else:
     st.write("Por favor, faça login para acessar o aplicativo.")
