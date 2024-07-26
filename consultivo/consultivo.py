@@ -607,7 +607,7 @@ with desenvolvimento:
     
     # Salvar documento em arquivo temporário e permitir download
     with NamedTemporaryFile(delete=False, suffix='.docx') as tmp_file:
-        documento.save(tmp_file.name)
+        document.save(tmp_file.name)
         st.download_button(
             label="Baixar Documento",
             data=open(tmp_file.name, 'rb').read(),
