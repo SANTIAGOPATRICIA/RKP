@@ -13,7 +13,8 @@ from datetime import datetime
 import locale
 import time
 from num2words import num2words
-import webbrowser
+import os
+from tempfile import NamedTemporaryFile
 from utils.funcoes import format_paragraph, add_formatted_text, format_title_centered, \
     format_title_justified, num_extenso, data_extenso, fonte_name_and_size, add_section,\
     create_paragraph, atualizar_base_dados, num_extenso_percentual, set_table_borders
@@ -603,7 +604,19 @@ with desenvolvimento:
     st.write(title_iv.text)
     st.write("*texto padrão*")
     if st.button('Salvar'):
-        # Salvar o documento
-        document.save(f"C:\\documentos_gerados\\proposta_consultivo_{nome_cliente}.docx")
-        st.success("Deu bom")
+    # Salvar o documento em um arquivo temporário
+    with NamedTemporaryFile(delete=False, suffix=".docx") as tmp_file:
+        document.save(tmp_file.name)
+        tmp_file_path = tmp_file.name
+    
+    st.success("Documento salvo com sucesso!")
+
+    # Criar um link de download
+    with open(tmp_file_path, "rb") as file:
+        btn = st.download_button(
+            label="Baixar documento",
+            data=file,
+            file_name=f"proposta_consultivo_{nome_cliente}.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
     
