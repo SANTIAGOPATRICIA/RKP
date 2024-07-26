@@ -604,5 +604,5 @@ with desenvolvimento:
     st.write("*texto padrão*")
     if st.button('Salvar'):
         # Salvar o documento
-        document.save(f"C:\documentos_gerados\proposta_consultivo_{nome_cliente}.docx")
+        document.save(f"C:\\documentos_gerados\\proposta_consultivo_{nome_cliente}.docx")
     
