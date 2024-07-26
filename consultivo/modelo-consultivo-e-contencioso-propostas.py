@@ -19,7 +19,10 @@ from utils.funcoes import format_paragraph, add_formatted_text, format_title_cen
 st.set_page_config(layout="wide")
 
 # Define o local para português do Brasil
-locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+try:
+    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+except locale.Error as e:
+    print(f"Erro ao definir a localidade: {e}")
 
 add_indentation() 
 # Expande a largura da tela
