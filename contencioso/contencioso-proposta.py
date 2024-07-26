@@ -53,8 +53,11 @@ st.set_page_config(layout="wide")
 add_indentation()
 
 # Define o local para português do Brasil
-import locale
-locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+try:
+    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+except locale.Error as e:
+    print(f"Erro ao definir a localidade: {e}")
+
 
 # Carregar o CSV existente ou criar um novo DataFrame
 try:
