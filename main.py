@@ -87,28 +87,28 @@ import streamlit as st
 
 # Criar as páginas necessárias
 consultivo = st.Page(
-    ".\consultivo\consultivo.py", 
+    "consultivo/consultivo.py", 
     title="Proposta Consultivo", 
     icon="💪", 
     default=True
 )
 contencioso_proposta = st.Page(
-    ".\contencioso\contencioso-proposta.py", 
+    "contencioso/contencioso-proposta.py", 
     title="Proposta Contencioso", 
     icon="💪"
 )
 contencioso_contrato = st.Page(
-    ".\contencioso\contencioso-contrato-preenchido.py", 
+    "contencioso/contencioso-contrato-preenchido.py", 
     title='Contrato preenchido', 
     icon="💪"
 )
 consultivo_contencioso = st.Page(
-    ".\consultivo_contencioso\consultivo-contencioso.py", 
+    "consultivo_contencioso/consultivo-contencioso.py", 
     title="Proposta Consultivo e Contencioso",
     icon="💪"
 )
 especial = st.Page(
-    ".\Especial\especial.py", 
+    "Especial/especial.py", 
     title="Proposta - Proteção Patrimonial", 
     icon="💪"
 )
