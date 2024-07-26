@@ -43,24 +43,31 @@ dados, desenvolvimento = st.columns([2,3])
 perguntas_respostas = {}
 #criando a coluna das perguntas
 
-url = 'https://www.appsheet.com/start/a141cf7c-842e-4733-8cee-ff087cf9a17d?platform=desktop#viewStack[0][identifier][Type]=Control&viewStack[0][identifier][Name]=Clientes&viewStack[1][identifier][Type]=Control&viewStack[1][identifier][Name]=cliente_Form&viewStack[1][mutableState][ControlName]=cliente_Form&viewStack[1][mutableState][Root]=form&viewStack[1][mutableState][DataStamp]=2024-05-20T19:54:32.0650625Z&viewStack[1][mutableState][isInEditMode]=true&viewStack[1][mutableState][transactionId]=d97130ec-95d4-446e-a3ff-b7ce8c9910f5&appName=registroPagamentos-455527719'
+# url = 'https://www.appsheet.com/start/a141cf7c-842e-4733-8cee-ff087cf9a17d?platform=desktop#viewStack[0][identifier][Type]=Control&viewStack[0][identifier][Name]=Clientes&viewStack[1][identifier][Type]=Control&viewStack[1][identifier][Name]=cliente_Form&viewStack[1][mutableState][ControlName]=cliente_Form&viewStack[1][mutableState][Root]=form&viewStack[1][mutableState][DataStamp]=2024-05-20T19:54:32.0650625Z&viewStack[1][mutableState][isInEditMode]=true&viewStack[1][mutableState][transactionId]=d97130ec-95d4-446e-a3ff-b7ce8c9910f5&appName=registroPagamentos-455527719'
 
 
-# Carregando a lista de clientes pela primeira vez
-lista_clientes = atualizar_base_dados()
+# # Carregando a lista de clientes pela primeira vez
+# lista_clientes = atualizar_base_dados()
 
 with dados:
     st.write('**Informação para a proposta**')
+    lsita_clientes = conn = st.connection("gsheets", type=GSheetsConnection)
+    existing_data = conn.read(worksheet='cliente', ttls=5, usecols=[1])
+    lista_clientes = existing_data.sort_values(by='Nome')['Nome'].unique().tolist()
 
-    # Botão para abrir o link de adição de novos clientes
-    if st.button('Adicionar novo cliente'):
-        webbrowser.open_new_tab(url)
+    #adiciona uma opção para cadastrar novo cliente
+    lista_clientes.append('--Novo cliente--')
+    lista_clientes = sorted(lista_clientes)
+    
+    # # Botão para abrir o link de adição de novos clientes
+    # if st.button('Adicionar novo cliente'):
+    #     webbrowser.open_new_tab(url)
 
-    # Botão para atualizar a base de dados e a lista de clientes no dropdown
-    if st.button('Atualizar base de dados'):
-        # Atualizando a lista de clientes
-        lista_clientes = atualizar_base_dados()
-        st.success('Base atualizada')
+    # # Botão para atualizar a base de dados e a lista de clientes no dropdown
+    # if st.button('Atualizar base de dados'):
+    #     # Atualizando a lista de clientes
+    #     lista_clientes = atualizar_base_dados()
+    #     st.success('Base atualizada')
 
     nome_cliente = st.selectbox(
         'Cliente',
