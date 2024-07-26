@@ -604,19 +604,19 @@ with desenvolvimento:
     st.write(title_iv.text)
     st.write("*texto padrão*")
     if st.button('Salvar'):
-    # Salvar o documento em um arquivo temporário
-    with NamedTemporaryFile(delete=False, suffix=".docx") as tmp_file:
-        document.save(tmp_file.name)
-        tmp_file_path = tmp_file.name
+        # Salvar o documento em um arquivo temporário
+        with NamedTemporaryFile(delete=False, suffix=".docx") as tmp_file:
+            document.save(tmp_file.name)
+            tmp_file_path = tmp_file.name
+        
+        st.success("Documento salvo com sucesso!")
     
-    st.success("Documento salvo com sucesso!")
-
-    # Criar um link de download
-    with open(tmp_file_path, "rb") as file:
-        btn = st.download_button(
-            label="Baixar documento",
-            data=file,
-            file_name=f"proposta_consultivo_{nome_cliente}.docx",
-            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        )
+        # Criar um link de download
+        with open(tmp_file_path, "rb") as file:
+            btn = st.download_button(
+                label="Baixar documento",
+                data=file,
+                file_name=f"proposta_consultivo_{nome_cliente}.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            )
     
