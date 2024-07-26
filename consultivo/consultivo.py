@@ -351,7 +351,7 @@ paragraph_four.text ='Para o cumprimento dos serviços, o escritório disponibil
 #paragrafo I-V
 paragraph_five = document.add_paragraph()
 format_paragraph(paragraph_five,3, 1.5748, 0, 18,18,18)
-paragraph_five.text ='A Roque Khouri & Pinheiro Advogados Associados alerta que a análise e confecção de contrato é realizada com base no direito aplicável, jurisprudência atual e principalmente nas  informações e documentos que serão sempre fornecidos pela Interessada.'
+paragraph_five.text ='A Roque Khouri & Pinheiro Advogados Associados alerta que a análise e confecção de contrato é realizada com base no direito aplicável, jurisprudência atual e principalmente nas informações e documentos que serão sempre fornecidos pela Interessada.'
 
 
 #############################################################################
@@ -492,7 +492,7 @@ paragraph_three_four = document.add_paragraph('Não estão incluídos na propost
 format_paragraph(paragraph_three_four, 3, 1.5748,0, 18,18,18)
 
 #paragrafo III-IV.I
-paragraph_three_four_one = document.add_paragraph("Eventuais despesas relativas a custas judiciais e extrajudiciais, como cópias, tributos, honorários periciais, bem como despesas com o eventual deslocamento e hospedagem de pessoal da Roque Khouri & Pinheiro Advogados Associados para fora de Brasília em razão da prestação de serviços serão de responsabilidade dos Interessados. Qualquer outro serviço ou indagação, incluindo também contatos informais por aplicativo de mensagem, também serão devidamente remunerados de acordo com as horas efetivamente trabalhadas.")
+paragraph_three_four_one = document.add_paragraph("Eventuais despesas relativas a custas judiciais e extrajudiciais, como cópias, tributos, honorários periciais, bem como despesas com o eventual deslocamento e hospedagem de pessoal da Roque Khouri & Pinheiro Advogados Associados para fora de Brasília em razão da prestação de serviços serão de responsabilidade dos Interessados. Qualquer outro serviço ou indagação, incluindo também contatos informais por aplicativo de mensagens, também serão devidamente remunerados de acordo com as horas efetivamente trabalhadas.")
 format_paragraph(paragraph_three_four_one, 3,  1.5748,0, 18,18,18)
 
 
