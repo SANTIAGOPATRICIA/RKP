@@ -227,7 +227,7 @@ with dados:
 
 # #####################################################################################
 # Abrir documento com papel timbrado da RKP
-document = Document(r".\docx\RKP-PapelTimbrado.docx")
+document = Document(r"docx/RKP-PapelTimbrado.docx")
 
 fonte_name_and_size(document, 'Arial', 12)
 
