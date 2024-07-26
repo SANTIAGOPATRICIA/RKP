@@ -220,7 +220,7 @@ with dados:
 
 # #####################################################################################
 # Abrir documento com papel timbrado da RKP
-document = Document(r".\docx\RKP-PapelTimbrado.docx")
+document = Document(r"docx/RKP-PapelTimbrado.docx")
 
 # Cria o estilo de lista numerada se não existir
 # create_list_number_style(document)
