@@ -220,11 +220,13 @@ def format_title_centered(title):
 
 #Função para formatar o titulo justificado
 def format_title_justified(title):
-    title_format = title.runs[0].font
-    title_format.name = 'Arial'  # Definir a fonte desejada
-    title_format.size = Pt(12)   # Definir o tamanho da fonte
-    title_format.color.rgb = black_color  # Definir a cor (preta)
-    title.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY  # Centralizar o título
+    for run in title.runs:
+        run.bold = True
+        title_format = run.font
+        title_format.name = 'Arial'  # Definir a fonte desejada
+        title_format.size = Pt(12)   # Definir o tamanho da fonte
+        title_format.color.rgb = black_color  # Definir a cor (preta)
+    title.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY  # Justificar o título
 
 
 
