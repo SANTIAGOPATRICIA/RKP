@@ -311,7 +311,7 @@ add_formatted_text(paragraph, full_text, bold_text)
 
 # I - DOS SERVIÇOS A SEREM DESENVOLVIDOS
 title_one = document.add_heading('I - DOS SERVIÇOS A SEREM DESENVOLVIDOS', level=2)
-title_one.add_run().bold = True
+# title_one.add_run().bold = True
 format_title_justified(title_one)
 
 
@@ -384,7 +384,7 @@ paragraph_five.text ='A Roque Khouri & Pinheiro Advogados Associados alerta que 
 # II - DA POLÍTICA GERAL DE VALORES - HONORÁRIOS
 #titulo II
 title_two = document.add_heading('II - DA POLÍTICA GERAL DE VALORES - HONORÁRIOS', level=2)
-title_two.add_run().bold = True
+# title_two.add_run().bold = True
 format_title_justified(title_two)
 #Paragrafo II-I
 paragraph_two_one = document.add_paragraph()
@@ -469,7 +469,7 @@ add_formatted_text(paragraph_two_four, full_text, bold_text)
 # III - DOS HONORÁRIOS ESPECÍFICOS
 #titulo III
 title_three = document.add_heading('III - DOS HONORÁRIOS ESPECÍFICOS', level=2)
-title_three.add_run().bold = True
+# title_three.add_run().bold = True
 format_title_justified(title_three)
 
 #paragrafo III-I
@@ -526,13 +526,13 @@ if desconto > 0:
     if parcelamento == 'Regular':
         paragraph_three_three.add_run("DESCONTO").bold = True
         paragraph_three_three.add_run(
-            f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pagos em {parcelas_texto} iguais de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
+            f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pagos em {parcelas_texto} iguais de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)}).""".strip()
         )
         format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
     elif parcelamento == 'Entrada + parcelas':
         paragraph_three_three.add_run("DESCONTO").bold = True
         paragraph_three_three.add_run(
-            f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pagos com entrada de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)})e o restante dividido em {parcelas_texto} de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
+            f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pagos com entrada de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)})e o restante dividido em {parcelas_texto} de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)}).""".strip()
         )
         format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
 else:
@@ -545,7 +545,7 @@ else:
         format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
     elif parcelamento == 'Entrada + parcelas':
         paragraph_three_three.add_run(
-            f"""Para a prestação de serviços advocatícios listada no Tópico I, a Roque Khouri & Pinheiro Advogados Associados estima o pagamento de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)}) no ato da assinatura da proposta e o restante dividos em {parcelas_texto} de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
+            f"""Para a prestação de serviços advocatícios listada no Tópico I, a Roque Khouri & Pinheiro Advogados Associados estima o pagamento de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)}) no ato da assinatura da proposta e o restante dividos em {parcelas_texto} de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)}).""".strip()
         )
         format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
 
@@ -569,7 +569,7 @@ format_paragraph(paragraph_three_five, 3, 1.5748,0, 18,18,18)
 # IV - DA CONFIDENCIALIDADE
 #Tituolo
 title_iv = document.add_heading('IV - DA CONFIDENCIALIDADE', level=2)
-title_iv.add_run().bold = True
+# title_iv.add_run().bold = True
 format_title_justified(title_iv)
 paragraph = document.add_paragraph()
 format_paragraph(paragraph, 3, 1.5748, 0, 18,18,18)
