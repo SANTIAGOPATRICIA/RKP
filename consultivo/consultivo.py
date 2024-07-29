@@ -220,7 +220,7 @@ with dados:
             # parcelamento_restante_formatado = "{.1f}".format(round(parcelamento_restante, 2))
             valor_parcelamento = saldo / parcelamento_restante
             valor_parcelamento_formatado = "{:.2f}".format(round(valor_parcelamento, 2))
-            st.write(f'*O valor do parcelamento é de R$ {valor_parcelamento}*')
+            st.write(f'*O valor do parcelamento é de R$ {valor_parcelamento_formatado}*')
     
     # # Definir um valor padrão para parcelamento
     # parcelamento = 1.0  # Se não for parcelado, será pago em uma única vez
@@ -311,6 +311,7 @@ add_formatted_text(paragraph, full_text, bold_text)
 
 # I - DOS SERVIÇOS A SEREM DESENVOLVIDOS
 title_one = document.add_heading('I - DOS SERVIÇOS A SEREM DESENVOLVIDOS', level=2)
+title_one.add_run().bold = True
 format_title_justified(title_one)
 
 
@@ -383,6 +384,7 @@ paragraph_five.text ='A Roque Khouri & Pinheiro Advogados Associados alerta que 
 # II - DA POLÍTICA GERAL DE VALORES - HONORÁRIOS
 #titulo II
 title_two = document.add_heading('II - DA POLÍTICA GERAL DE VALORES - HONORÁRIOS', level=2)
+title_two.add_run().bold = True
 format_title_justified(title_two)
 #Paragrafo II-I
 paragraph_two_one = document.add_paragraph()
@@ -467,6 +469,7 @@ add_formatted_text(paragraph_two_four, full_text, bold_text)
 # III - DOS HONORÁRIOS ESPECÍFICOS
 #titulo III
 title_three = document.add_heading('III - DOS HONORÁRIOS ESPECÍFICOS', level=2)
+title_three.add_run().bold = True
 format_title_justified(title_three)
 
 #paragrafo III-I
@@ -566,6 +569,7 @@ format_paragraph(paragraph_three_five, 3, 1.5748,0, 18,18,18)
 # IV - DA CONFIDENCIALIDADE
 #Tituolo
 title_iv = document.add_heading('IV - DA CONFIDENCIALIDADE', level=2)
+title_iv.add_run().bold = True
 format_title_justified(title_iv)
 paragraph = document.add_paragraph()
 format_paragraph(paragraph, 3, 1.5748, 0, 18,18,18)
