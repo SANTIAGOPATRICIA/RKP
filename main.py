@@ -31,28 +31,28 @@ import streamlit as st
 #     consultivo = st.Page(
 #         ".\consultivo\consultivo.py", 
 #         title="Proposta Consultivo", 
-#         icon="💪", 
+#         icon="⚖️", 
 #         default=True
 #     )
 #     contencioso_proposta = st.Page(
 #         ".\contencioso\contencioso-proposta.py", 
 #         title="Proposta Contencioso", 
-#         icon="💪"
+#         icon="⚖️"
 #     )
 #     contencioso_contrato = st.Page(
 #         ".\contencioso\contencioso-contrato-preenchido.py", 
 #         title='Contrato preenchido', 
-#         icon="💪"
+#         icon="⚖️"
 #     )
 #     consultivo_contencioso = st.Page(
 #         ".\consultivo_contencioso\consultivo-contencioso.py", 
 #         title="Proposta Consultivo e Contencioso",
-#         icon="💪"
+#         icon="⚖️"
 #     )
 #     especial = st.Page(
 #         ".\Especial\especial.py", 
 #         title="Proposta - Proteção Patrimonial", 
-#         icon="💪"
+#         icon="⚖️"
 #     )
 
 #     # Criar uma página para logout
