@@ -20,12 +20,10 @@ from utils.funcoes import format_paragraph, add_formatted_text, format_title_cen
     create_paragraph, atualizar_base_dados, num_extenso_percentual, set_table_borders
 
 
+# Expande a largura da tela
+# st.set_page_config(layout="wide")
 
-st.set_page_config(layout="wide")
 
-
-# # Define o local para português do Brasil
-# locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 try:
     locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 except locale.Error as e:
@@ -33,7 +31,6 @@ except locale.Error as e:
 
 
 add_indentation() 
-# Expande a largura da tela
 
 
 # Store the initial value of widgets in session state
@@ -47,6 +44,12 @@ if "visibility" not in st.session_state:
 lista_numerada = ['a)', 'b)', 'c)', 'd)', 'e)', 'f)', 'g)', 'h)', 'i)', 'j)', 'k)', 'l)', 'm)', 'n)', 'o)', 'p)', 'q)', 'r)', 's)', 't)']
 
 #####################################################################################
+
+recuo = "&nbsp;" * 24
+
+
+
+
 dados, desenvolvimento = st.columns([2,3])
 #Dicionário das informações
 perguntas_respostas = {}
@@ -78,7 +81,7 @@ with dados:
     
     st.divider()
     #objeto da proposta
-    input_objeto = st.text_area(label="Objeto(s) da proposta (ENTER para quebra de linha) ")
+    input_objeto = st.text_area(label="Objeto(s) da proposta (ENTER para quebra de linha) ", placeholder='Conforme solicitação, apresentamos proposta de honorários para atuação consultiva, referente à ...')
     resumo_objeto = st.text_area(label="Resumo do(s) objeto(s) (ENTER para quebra de linha)")
 
     perguntas_respostas = {
@@ -188,21 +191,45 @@ with dados:
     st.write(f"Valor da proposta com desconto: R${total_final_formatado}")
     st.divider()    
     # Parcelamento
-    parcelar = st.radio('Parcelar o valor?', ['Sim', 'Não'],
-        key='parcelar',
-        label_visibility=st.session_state.visibility,
-        disabled=st.session_state.disabled,
-        horizontal=st.session_state.horizontal,
-        index=None)
+    # parcelar = st.radio('Parcelar o valor?', ['Sim', 'Não'],
+    #     key='parcelar',
+    #     label_visibility=st.session_state.visibility,
+    #     disabled=st.session_state.disabled,
+    #     horizontal=st.session_state.horizontal,
+    #     index=None)
+    parcelamento = st.selectbox('Parcelamento', ['Regular', 'Entrada + parcelas'], index=None)
+    numero_parcelas_formatado = ''
+    valor_entrada_formatado = ''
+    parcelamento_restante = ''
+    numero_parcelas = 0
+    parcelamento_restante = 0
 
-    # Definir um valor padrão para parcelamento
-    parcelamento = 1.0  # Se não for parcelado, será pago em uma única vez
+    if parcelamento != None:
+        if parcelamento == 'Regular':
+            numero_parcelas = st.selectbox('nº de parcelas', options=range(2,25))
+            numero_parcelas_formatado = "{:.2f}".format(round(numero_parcelas, 2))
+            valor_parcelamento = total_final / numero_parcelas
+            valor_parcelamento_formatado = "{:.2f}".format(round(valor_parcelamento, 2))
+            st.write(f'O valor do parcelamento é de R$ {valor_parcelamento}')
+        else:
+            valor_entrada = st.number_input('Valor da entrada (R$)', min_value=1000)
+            valor_entrada_formatado = "{:.2f}".format(round(valor_entrada, 2))
+            saldo = total_final - valor_entrada
+            st.write(f'*O saldo é de R$ {saldo}*')
+            parcelamento_restante = st.selectbox('nº de parcelas', options=range(2,25))
+            # parcelamento_restante_formatado = "{.1f}".format(round(parcelamento_restante, 2))
+            valor_parcelamento = saldo / parcelamento_restante
+            valor_parcelamento_formatado = "{:.2f}".format(round(valor_parcelamento, 2))
+            st.write(f'*O valor do parcelamento é de R$ {valor_parcelamento}*')
+    
+    # # Definir um valor padrão para parcelamento
+    # parcelamento = 1.0  # Se não for parcelado, será pago em uma única vez
 
-    if parcelar == 'Sim':
-        parcelamento = st.selectbox('Parcelamento do valor proposto', (2, 3, 4, 5, 6))
-        valor_parcelado = total_final / parcelamento
-        valor_parcelado_formatado = "{:.2f}".format(round(valor_parcelado, 2))
-        st.write(f'O valor parcelado da proposta é de R${valor_parcelado_formatado}')
+    # if parcelar == 'Sim':
+    #     parcelamento = st.selectbox('Parcelamento do valor proposto', (2, 3, 4, 5, 6))
+    #     valor_parcelado = total_final / parcelamento
+    #     valor_parcelado_formatado = "{:.2f}".format(round(valor_parcelado, 2))
+    #     st.write(f'O valor parcelado da proposta é de R${valor_parcelado_formatado}')
 
 
     perguntas_respostas = {
@@ -244,7 +271,8 @@ paragraph_format.alignment = 2  # a direita
 
 #############################################################################
 # Adicionar título ao doc
-title = document.add_heading('PROPOSTA PARA PRESTAÇÃO \nDE SERVIÇOS ADVOCATÍCIOS')
+title = document.add_heading(level=1)
+title.add_run('PROPOSTA PARA PRESTAÇÃO \nDE SERVIÇOS ADVOCATÍCIOS').bold=True
 format_title_centered(title)
 space_format = title.paragraph_format
 space_format.space_before = Pt(48)
@@ -265,7 +293,7 @@ paragraph_format.line_spacing = Pt(18)
 paragraph_format.space_after = Pt(48)
 
 paragraph_ref = document.add_paragraph()
-paragraph_ref.text = 'Referência: PROPOSTA DE HONORÁRIOS ADVOCATÍCIOS'
+paragraph_ref.add_run('Referência: PROPOSTA DE HONORÁRIOS ADVOCATÍCIOS').bold=True
 paragraph_format = paragraph_ref.paragraph_format
 paragraph_format.space_before = Pt(18)
 paragraph_format.space_after = Pt(96)
@@ -304,9 +332,6 @@ format_paragraph(paragraph_atividades, 3, 1.4764,0,18,18,18)
 
 
 #atuação
-
-
-
 itens_atuacao = [
     "Providências preliminares de levantamento e análise de todas as informações e documentos relativos ao objeto da presente proposta, a fim de propiciar o embasamento jurídico necessário;",
     "Participações em reuniões e eventuais discussões a respeito do contrato, incluindo em entendimentos entre as partes, caso seja necessário;",
@@ -476,16 +501,52 @@ else:
 
         
 #paragrafo III-III
-paragraph_three_three = document.add_paragraph()
-if parcelamento > 1:
-    paragraph_three_three.add_run("DESCONTO").bold = True
-    paragraph_three_three.add_run(f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R${total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pagos em {num2words(parcelamento, lang='pt_BR')} parcelas iguais de R$ {valor_parcelado_formatado} ({num_extenso(valor_parcelado_formatado)})""".strip())
+# Definir a função de concordância nominal para parcelas
+def obter_texto_parcelas(numero):
+    if numero == 1:
+        return 'uma parcela'
+    elif numero == 2:
+        return 'duas parcelas'
+    else:
+        return f"{num2words(numero, lang='pt_BR')} parcelas"
 
-    format_paragraph(paragraph_three_three, 3, 1.5748, 0,18,18,18)
+# Inicializar a variável 'parcelas_texto' de acordo com 'numero_parcelas' e 'parcelamento_restante'
+parcelas_texto = obter_texto_parcelas(numero_parcelas)
+
+# Atualizar 'parcelas_texto' caso o parcelamento seja 'Entrada + parcelas'
+if parcelamento == 'Entrada + parcelas':
+    parcelas_texto = obter_texto_parcelas(parcelamento_restante)
+
+# Verificar e aplicar o desconto
+if desconto > 0:
+    paragraph_three_three = document.add_paragraph()
+    if parcelamento == 'Regular':
+        paragraph_three_three.add_run("DESCONTO").bold = True
+        paragraph_three_three.add_run(
+            f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pagos em {parcelas_texto} iguais de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
+        )
+        format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
+    elif parcelamento == 'Entrada + parcelas':
+        paragraph_three_three.add_run("DESCONTO").bold = True
+        paragraph_three_three.add_run(
+            f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pagos com entrada de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)})e o restante dividido em {parcelas_texto} de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
+        )
+        format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
 else:
-    paragraph_three_three.add_run("DESCONTO").bold = True
-    paragraph_three_three.add_run(f': Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R${total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados.')
-    format_paragraph(paragraph_three_three, 3, 1.5748,0, 18,18,18)
+    paragraph_three_three = document.add_paragraph()
+    if parcelamento == 'Regular':
+        # paragraph_three_three.add_run("PAGAMENTO").bold = True
+        paragraph_three_three.add_run(
+            f"""Para a prestação de serviços advocatícios listada no Tópico I, a Roque Khouri & Pinheiro Advogados Associados estima o pagamento de {parcelas_texto} mensais de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)}).""".strip()
+        )
+        format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
+    elif parcelamento == 'Entrada + parcelas':
+        paragraph_three_three.add_run(
+            f"""Para a prestação de serviços advocatícios listada no Tópico I, a Roque Khouri & Pinheiro Advogados Associados estima o pagamento de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)}) no ato da assinatura da proposta e o restante dividos em {parcelas_texto} de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
+        )
+        format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
+
+
 
 #paragrafo III-IV
 paragraph_three_four = document.add_paragraph('Não estão incluídos na proposta ora apresentada eventuais custos com a contratação de advogados correspondentes fora de Brasília, bem como as despesas a serem incorridas em virtude da execução dos serviços, tais como, cópias reprográficas, custas judiciais, honorários periciais, emolumentos com autenticação de cópias e reconhecimento de firmas, obtenção de certidões, motoboys e deslocamentos à razão de R$ 1,00/km, entre outras despesas, as quais serão pagas diretamente por V.Sa. ou reembolsadas mediante a apresentação dos respectivos comprovantes.')
@@ -544,10 +605,16 @@ with desenvolvimento:
         if nome_cliente:
             break
         time.sleep(2)
-    st.write(paragraph_date.text)
+    # st.write(paragraph_date.text)
+    st.markdown(f"""
+        <div style="text-align: right;">
+            {paragraph_date.text}
+        </div>
+        """, unsafe_allow_html=True)
     st.write(title.text)
     # st.write(p_de.text)
     st.write(f'**{paragraph_para.text}**')
+    st.write('')
     st.write(paragraph_ref.text)
     st.write('*texto padrao apresentação do escritorio*')
     st.write(title_one.text)
@@ -559,27 +626,80 @@ with desenvolvimento:
         time.sleep(2)  
     if len(desdobramentos) > 1:
         for texto in textos_paragrafos:
-            st.write(texto)
+            # st.write(texto)
+            st.markdown(f"""
+                    <div style="text-align: justify;">
+                        {texto}
+                    </div>
+                    """, unsafe_allow_html=True)                        
     else:
-        st.write(paragrah_padrao.text)
+        # st.write(paragrah_padrao.text)
+        st.markdown(f"""
+                    <div style="text-align: justify;">
+                        {paragrah_padrao.text}
+                    </div>
+                    """, unsafe_allow_html=True)
     while True:
         if resumo_objeto:
             break
         time.sleep(2)
 
-    st.write(paragraph_atividades.text)
-        #inserir recuo de paragrafo
-    recuo = "&nbsp;" * 24
-    for item in itens_atuacao:
-        st.markdown(f"{recuo}-  {item}")
+    # st.write(paragraph_atividades.text)
+    st.write("")
+    st.markdown(f"""
+                    <div style="text-align: justify;">
+                        {paragraph_atividades.text}
+                    </div>
+                    """, unsafe_allow_html=True)
     
-    st.write(paragraph_four.text)
-    st.write(paragraph_five.text)
-    st.write(title_two.text)
+    #inserir recuo de paragrafo
+    st.write("")    
+    for item in itens_atuacao:
+        st.markdown(f"""
+                <div style="text-align: justify;">
+                    {recuo}-  {item}
+                </div>
+                """, unsafe_allow_html=True)
+    
+        # st.markdown(f"{recuo}-  {item}")
+    
+    # st.write(paragraph_four.text)
+    st.markdown(f"""
+                    <div style="text-align: justify;">
+                        {paragraph_four.text}
+                    </div>
+                    """, unsafe_allow_html=True)
+    # st.write(paragraph_five.text)
+    st.write("")
+    st.markdown(f"""
+                    <div style="text-align: justify;">
+                        {paragraph_five.text}
+                    </div>
+                    """, unsafe_allow_html=True)
+    # st.write(title_two.text)
+    st.write("")
+    st.markdown(f"""
+                    <div style="text-align: justify;">
+                        {title_two.text}
+                    </div>
+                    """, unsafe_allow_html=True)
+    st.write("")
     st.write('*Texto padrão*')
+    st.write("")
     st.write(title_three.text)
-    st.write(paragraph_three_one.text)
-    st.write(paragraph_three_two.text)
+    # st.write(paragraph_three_one.text)
+    st.markdown(f"""
+                    <div style="text-align: justify;">
+                        {paragraph_three_one.text}
+                    </div>
+                    """, unsafe_allow_html=True)
+    # st.write(paragraph_three_two.text)
+    st.write("")
+    st.markdown(f"""
+                    <div style="text-align: justify;">
+                        {paragraph_three_two.text}
+                    </div>
+                    """, unsafe_allow_html=True)
     while True:
         if valor_aplicado:
             break
@@ -598,9 +718,29 @@ with desenvolvimento:
             st.write(f'{recuo}{block_three_valor_aplicado.text}')
             st.write(f'{recuo}{block_three_subtotal.text}')
 
-    st.write(paragraph_three_three.text)
-    st.write(paragraph_three_four.text)
-    st.write(paragraph_three_five.text)
+    # st.write(paragraph_three_three.text)
+    st.write("")
+    if parcelamento is not None:
+        st.markdown(f"""
+                        <div style="text-align: justify;">
+                            {paragraph_three_three.text}
+                        </div>
+                        """, unsafe_allow_html=True)
+    # st.write(paragraph_three_four.text)
+    st.write("")
+    st.markdown(f"""
+                    <div style="text-align: justify;">
+                        {paragraph_three_four.text}
+                    </div>
+                    """, unsafe_allow_html=True)
+    # st.write(paragraph_three_five.text)
+    st.write("")
+    st.markdown(f"""
+                    <div style="text-align: justify;">
+                        {paragraph_three_five.text}
+                    </div>
+                    """, unsafe_allow_html=True)
+    st.write("")
     st.write(title_iv.text)
     st.write("*texto padrão*")
 
@@ -611,6 +751,6 @@ with desenvolvimento:
         st.download_button(
             label="Baixar Documento",
             data=open(tmp_file.name, 'rb').read(),
-            file_name='proposta_comercial.docx',
+            file_name=f'proposta_consultivo_{nome_cliente}.docx',
             mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         )
