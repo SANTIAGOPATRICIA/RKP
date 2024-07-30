@@ -1,10 +1,9 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-from streamlit_gsheets import GSheetsConnection
 from st_pages import add_indentation
 from docx import Document
-from docx.shared import Inches, Pt
+from docx.shared import Pt
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
@@ -12,14 +11,14 @@ from docx.oxml import OxmlElement
 from datetime import datetime
 import locale
 import time
-from num2words import num2words
+from tempfile import NamedTemporaryFile
 from utils.funcoes import format_paragraph, add_formatted_text, format_title_centered, \
     format_title_justified, num_extenso, data_extenso, fonte_name_and_size, add_section,\
-    num_extenso_percentual, set_table_borders
+    num_extenso_percentual, set_table_borders, obter_texto_parcelas
 
 
 
-st.set_page_config(layout="wide")
+# st.set_page_config(layout="wide")
 
 #identação
 recuo = "&nbsp;" * 24
@@ -28,11 +27,7 @@ recuo_adicao = "&nbsp;" * 32
 add_indentation()
 
 # Define o local para português do Brasil
-try:
-    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
-except locale.Error as e:
-    print(f"Erro ao definir a localidade: {e}")
-
+locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
 # Inicializar DataFrame vazio
 df_inputs = pd.DataFrame(columns=[
@@ -121,9 +116,8 @@ with dados:
     st.write('**Informação para a proposta**')
 
     # Carregando a lista de clientes pela primeira vez
-    conn = st.connection("gsheets", type=GSheetsConnection)
-    existing_data = conn.read(worksheet="cliente", ttls=5, usecols=[1])
-    lista_clientes = existing_data.sort_values(by='Nome')['Nome'].unique().tolist()
+    lista_clientes = pd.read_csv('clientes.csv')
+    lista_clientes = lista_clientes.sort_values(by='Nome')['Nome'].unique().tolist()
 
     # Adiciona uma opção para cadastrar novo cliente
     lista_clientes.append("--Novo cliente--")
@@ -171,7 +165,6 @@ with dados:
     prazo = st.selectbox("Prazo em dias para entrega do parecer jurídico", (10,15,30,60,90))
 
     
-
     #dos valores
     st.divider()
     hora_total = st.number_input(label='Total de horas:', step=10, key='hora_total_')
@@ -206,28 +199,38 @@ with dados:
         st.write(f'*O valor da proposta consultiva é de R${total_final_formatado}*')
 
     # Parcelamento
-    parcelar = st.radio('Parcelar o valor?', ['Sim', 'Não'],
-        key='parcelar',
-        label_visibility=st.session_state.visibility,
-        disabled=st.session_state.disabled,
-        horizontal=st.session_state.horizontal,
-        index=None)
+    parcelamento = st.selectbox('Parcelamento', ['Regular', 'Entrada + parcelas'], index=None)
+    numero_parcelas_formatado = ''
+    valor_entrada_formatado = ''
+    parcelamento_restante = ''
+    numero_parcelas = 0
+    parcelamento_restante = 0
 
-    # Definir um valor padrão para parcelamento
-    parcelamento = 1.0  # Se não for parcelado, será pago em uma única vez
-
-    if parcelar == 'Sim':
-        parcelamento = st.selectbox('Parcelamento do valor proposto', (2, 3, 4, 5, 6))
-        valor_parcelado = total_final / parcelamento
-        valor_parcelado_formatado = "{:.2f}".format(round(valor_parcelado, 2))
-        st.write(f'O valor parcelado da proposta é de R${valor_parcelado_formatado}')
+    if parcelamento != None:
+        if parcelamento == 'Regular':
+            numero_parcelas = st.selectbox('nº de parcelas', options=range(2,25))
+            numero_parcelas_formatado = "{:.2f}".format(round(numero_parcelas, 2))
+            valor_parcelamento = total_final / numero_parcelas
+            valor_parcelamento_formatado = "{:.2f}".format(round(valor_parcelamento, 2))
+            st.write(f'O valor do parcelamento é de R$ {valor_parcelamento}')
+        else:
+            valor_entrada = st.number_input('Valor da entrada (R$)', min_value=1000)
+            valor_entrada_formatado = "{:.2f}".format(round(valor_entrada, 2))
+            saldo = total_final - valor_entrada
+            st.write(f'*O saldo é de R$ {saldo}*')
+            parcelamento_restante = st.selectbox('nº de parcelas', options=range(2,25))
+            # parcelamento_restante_formatado = "{.1f}".format(round(parcelamento_restante, 2))
+            valor_parcelamento = saldo / parcelamento_restante
+            valor_parcelamento_formatado = "{:.2f}".format(round(valor_parcelamento, 2))
+            st.write(f'*O valor do parcelamento é de R$ {valor_parcelamento_formatado}*')
+    
 
     st.divider()
 
 
 # #####################################################################################
 # Abrir documento com papel timbrado da RKP
-document = Document(r"docx/RKP-PapelTimbrado.docx")
+document = Document(r".\docx\RKP-PapelTimbrado.docx")
 
 fonte_name_and_size(document, 'Arial', 12)
 
@@ -259,7 +262,7 @@ p_de_format.space_after = Pt(8)
 
 
 paragraph_para = document.add_paragraph()
-paragraph_para.add_run(f'PARA: {nome_cliente}  (Interessado(a))').bold = True
+paragraph_para.add_run(f'PARA: {nome_cliente} (Interessado(a))').bold = True
 paragraph_format = paragraph_para.paragraph_format
 paragraph_format.line_spacing = Pt(18)
 paragraph_format.space_after = Pt(48)
@@ -313,7 +316,6 @@ for i in range(len(servicos)):
     format_paragraph(paragrafo_, 3, 0,1.385827, 18, 18, 18)
 
 #Questoes a serem respondidas
-
 if len(questoes_selecionadas) > 1:
     for i, questao in enumerate(questoes_selecionadas):
         paragrafo_ = document.add_paragraph(f'{i+1}) {questao}')
@@ -450,19 +452,47 @@ format_paragraph(block_three_subtotal, 3, 0, 1.5748, 18,18,18)
 
 #desconto
 # Criação do parágrafo III-III
-paragraph_three_three = document.add_paragraph()
 
-if parcelamento > 1:
-    paragraph_three_three.add_run("DESCONTO").bold = True
-    paragraph_three_three.add_run(
-        f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R${total_final_formatado} ({num_extenso(total_final)}) pela prestação de serviços contratados, a ser pagos em {num2words(parcelamento, lang='pt_BR')} parcelas iguais de R$ {valor_parcelado_formatado} ({num_extenso(valor_parcelado_formatado)})."""
-    )
-    format_paragraph(paragraph_three_three, 3,  1.5748,0, 18, 18, 18)
+# Inicializar a variável 'parcelas_texto' de acordo com 'numero_parcelas' e 'parcelamento_restante'
+parcelas_texto = obter_texto_parcelas(numero_parcelas)
+
+# Atualizar 'parcelas_texto' caso o parcelamento seja 'Entrada + parcelas'
+if parcelamento == 'Entrada + parcelas':
+    parcelas_texto = obter_texto_parcelas(parcelamento_restante)
+
+# Verificar e aplicar o desconto
+if desconto_percentual_consultivo > 0:
+    paragraph_three_three = document.add_paragraph()
+    if parcelamento == 'Regular':
+        paragraph_three_three.add_run("DESCONTO").bold = True
+        paragraph_three_three.add_run(
+            f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pagos em {parcelas_texto} iguais de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
+        )
+        format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
+    elif parcelamento == 'Entrada + parcelas':
+        paragraph_three_three.add_run("DESCONTO").bold = True
+        paragraph_three_three.add_run(
+            f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pagos com entrada de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)}) e o restante dividido em {parcelas_texto} de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
+        )
+        format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
 else:
-    paragraph_three_three.add_run("DESCONTO").bold = True
-    paragraph_three_three.add_run(
-        f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R${total_final_formatado} ({num_extenso(total_final)}) pela prestação de serviços contratados.""")
-    format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
+    paragraph_three_three = document.add_paragraph()
+    if parcelamento == 'Regular':
+        # paragraph_three_three.add_run("PAGAMENTO").bold = True
+        paragraph_three_three.add_run(
+            f"""Para a prestação de serviços advocatícios listada no Tópico I, a Roque Khouri & Pinheiro Advogados Associados estima o pagamento de {parcelas_texto} mensais de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)}).""".strip()
+        )
+        format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
+    elif parcelamento == 'Entrada + parcelas':
+        paragraph_three_three.add_run(
+            f"""Para a prestação de serviços advocatícios listada no Tópico I, a Roque Khouri & Pinheiro Advogados Associados estima o pagamento de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)}) no ato da assinatura da proposta e o restante dividos em {parcelas_texto} de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
+        )
+        format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
+    else:
+        paragraph_three_three.add_run(
+            f"""Para a prestação de serviços advocatícios listada no Tópico I, a Roque Khouri & Pinheiro Advogados Associados estima o pagamento de R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) no ato da assinatura da proposta)""".strip()
+        )
+        format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
 
 #paragrafo III-IV
 paragraph_three_four = document.add_paragraph('Não estão incluídos na proposta ora apresentada eventuais custos com a contratação de advogados correspondentes fora de Brasília, bem como as despesas a serem incorridas em virtude da execução dos serviços, tais como, cópias reprográficas, custas judiciais, honorários periciais, emolumentos com autenticação de cópias e reconhecimento de firmas, obtenção de certidões, motoboys e deslocamentos à razão de R$ 1,00/km, entre outras despesas, as quais serão pagas diretamente por V.Sa. ou reembolsadas mediante a apresentação dos respectivos comprovantes.')
@@ -520,14 +550,24 @@ paragraph = document.add_paragraph()
 
 ####################################################################################################
 
+def justity_st(objeto):
+    st.markdown(f"""
+            <div style="text-align: justify;">
+            {objeto.text}
+            </div>
+            """, unsafe_allow_html=True)
+
 with desenvolvimento:
     while True:
         if nome_cliente:
             break
         time.sleep(2)
-    st.write(paragraph_date.text)
+    st.markdown(f"""
+        <div style="text-align: right;">
+            {paragraph_date.text}
+        </div>
+        """, unsafe_allow_html=True)
     st.write(title.text)
-    # st.write(p_de.text)
     st.write(f'**{paragraph_para.text}**')
     st.write(paragraph_ref.text)
     st.write('*texto padrao apresentação do escritorio*')
@@ -536,38 +576,93 @@ with desenvolvimento:
         if len(paragrafos_objeto) > 1:
             for i, paragrafo in enumerate(paragrafos_objeto):
                 if i == len(paragrafos_objeto) - 1:
-                    st.write(f"Considerando que {paragrafo}, este jurídico elabora um esboço de proposta para a seguinte prestação de serviços advocatícios:")
+                    st.markdown(f"""
+                    <div style="text-align: justify;">
+                               Considerando que {paragrafo}, este jurídico elabora um esboço de proposta para a seguinte prestação de serviços advocatícios: 
+                               </div>
+                    """, unsafe_allow_html=True)
                 else:
-                    st.write(f"Considerando que {paragrafo}")
+                    st.markdown(f"""
+                    <div style="text-align: justify;">
+                               Considerando que {paragrafo} 
+                               </div>
+                    """, unsafe_allow_html=True)
         else:
-            st.write(f"Considerando que {input_objeto}, este jurídico elabora um esboço de proposta para a seguinte prestação de serviços advocatícios:")
+            st.markdown(f"""
+                    <div style="text-align: justify;">
+                               Considerando que {input_objeto}, este jurídico elabora um esboço de proposta para a seguinte prestação de serviços advocatícios: 
+                               </div>
+                    """, unsafe_allow_html=True)
         
         #Serviços a serem prestados
         for i in range(len(servicos)):
-            st.markdown(f"{recuo}{lista_numerada[i]} {servicos[i]}")
-        
+            st.markdown(f"""
+                    <div style="text-align: justify;">
+                    {recuo}{lista_numerada[i]} {servicos[i]}
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
         #Questoes a serem respondidas
         if len(questoes_selecionadas) > 1:
             for i, questao in enumerate(questoes_selecionadas):
-                st.markdown(f"{recuo_adicao} {i+1}) {questao}")
+                st.markdown(f"""
+                            <div style="text-align: justify;">
+                            {recuo_adicao} {i+1}) {questao}
+                            </div>
+                            """, unsafe_allow_html=True)
         
         #prazo de entrega
-        st.write(paragraph_four.text)
+        st.markdown(f"""
+        <div style="text-align: justify;">
+        {paragraph_four.text}
+        </div>
+        """, unsafe_allow_html=True)
+        
 
         #texto padrão
-        st.write(f'*texto padrão sobre o alerta do jurídico, apresentação de documentos pertinentes e aviso sobre a  não realização de objetos fora da propsota.*')
-        st.write(f'*Texto padrão sobre a política de honorários*')
+        st.write("")
+        st.markdown(f"""
+        <div style="text-align: justify;">
+        <i>texto padrão sobre o alerta do jurídico, \
+                    apresentação de documentos pertinentes e aviso sobre a  \
+                    não realização de objetos fora da proposta e política de honorários.</i>
+        </div>
+        """, unsafe_allow_html=True)
+        
         st.write(" ")
-        st.write(title_three.text)
-        st.write(paragraph_three_two.text)
+        justity_st(title_three)
+        justity_st(paragraph_three_one)
+        st.write("")
+        justity_st(paragraph_three_two)        
+
         st.markdown(f'{recuo} {paragraph_valores.text}')
         st.markdown(f'{recuo} {block_three_hora.text}')
         st.markdown(f'{recuo} {block_three_valor_aplicado.text}')
         st.markdown(f'{recuo} {block_three_subtotal.text}')
-        st.markdown(f'{recuo} {paragraph_three_three.text}')
-        st.write('*Texto padrão sobre custo de contratação de advogados correspondentes, despesas de custas*')
-        st.write("*Texto padrão sobre a confidencialidade*")
+        st.markdown(f"""
+        <div style="text-align: justify;">
+            {recuo} {paragraph_three_three.text}
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.write("")
+        st.markdown(f"""
+        <div style="text-align: justify;">
+            <i>Texto padrão sobre custo de contratação de advogados correspondentes, despesas de custas e confidencialidade.</i>
+            </div>
+            """, unsafe_allow_html=True)
+        
+    st.write("")
+    st.write("")
+    st.write("")
 
-    if st.button('Salvar'):
-        # Salvar o documento
-        document.save(f".\documentos_gerados\proposta_consultivo_especial_{nome_cliente}.docx")
+    # Salvar documento em arquivo temporário e permitir download
+    with NamedTemporaryFile(delete=False, suffix='.docx') as tmp_file:
+        document.save(tmp_file.name)
+        st.download_button(
+            label="Baixar Documento",
+            data=open(tmp_file.name, 'rb').read(),
+            file_name=f'proposta_consultivo_especial_{nome_cliente}.docx',
+            mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
+
