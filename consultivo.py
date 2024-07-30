@@ -55,6 +55,7 @@ dados, desenvolvimento = st.columns([2,3])
 perguntas_respostas = {}
 
 with dados:
+    
     st.write('**Informação para a proposta**')
 # Carregando a lista de clientes pela primeira vez
     lista_clientes = pd.read_csv('clientes.csv')
@@ -69,9 +70,7 @@ with dados:
             (lista_clientes),
             index=None,
             placeholder='Selecione o cliente'
-        )
-    
-   
+        )   
 
     if nome_cliente == '--Novo cliente--':
         form = st.form('Novo Cliente')
@@ -87,8 +86,7 @@ with dados:
         'nome_cliente': nome_cliente,
         '[objeto_texto]': input_objeto,
         '[resumo_objeto]': resumo_objeto,}
-
-    
+  
 
     # resumo do objeto  da proposta
     # Inicializar DataFrame vazio
@@ -166,14 +164,6 @@ with dados:
     st.write(f'**Valor da proposta: R${valor_proposto}**')
     
     #desconto
-    # desconto = st.radio("Há desconto?", 
-    #     ['Sim', 'Não'],
-    #     key='desconto',
-    #     label_visibility=st.session_state.visibility,
-    #     disabled=st.session_state.disabled,
-    #     horizontal=st.session_state.horizontal,
-    #     index=None
-    #     )
     st.divider()
     desconto = st.number_input('Percentual do desconto do consultivo (%)', min_value=0.0, max_value=100.0, key='consultivo_desc')
     desconto_percentual = float("{:.2f}".format(desconto))
@@ -183,19 +173,13 @@ with dados:
     if desconto > 0.0:
         total_final = valor_proposto*((100.00-desconto_percentual)/100)
         total_final_formatado = "{:.2f}".format(round(total_final, 2))
+        st.write(f"Valor da proposta com desconto: R${total_final_formatado}")
     else:
         total_final = valor_proposto
         total_final_formatado = "{:.2f}".format(round(total_final, 2))
-
-    st.write(f"Valor da proposta com desconto: R${total_final_formatado}")
+    
     st.divider()    
-    # Parcelamento
-    # parcelar = st.radio('Parcelar o valor?', ['Sim', 'Não'],
-    #     key='parcelar',
-    #     label_visibility=st.session_state.visibility,
-    #     disabled=st.session_state.disabled,
-    #     horizontal=st.session_state.horizontal,
-    #     index=None)
+
     parcelamento = st.selectbox('Parcelamento', ['Regular', 'Entrada + parcelas'], index=None)
     numero_parcelas_formatado = ''
     valor_entrada_formatado = ''
@@ -221,15 +205,6 @@ with dados:
             valor_parcelamento_formatado = "{:.2f}".format(round(valor_parcelamento, 2))
             st.write(f'*O valor do parcelamento é de R$ {valor_parcelamento_formatado}*')
     
-    # # Definir um valor padrão para parcelamento
-    # parcelamento = 1.0  # Se não for parcelado, será pago em uma única vez
-
-    # if parcelar == 'Sim':
-    #     parcelamento = st.selectbox('Parcelamento do valor proposto', (2, 3, 4, 5, 6))
-    #     valor_parcelado = total_final / parcelamento
-    #     valor_parcelado_formatado = "{:.2f}".format(round(valor_parcelado, 2))
-    #     st.write(f'O valor parcelado da proposta é de R${valor_parcelado_formatado}')
-
 
     perguntas_respostas = {
             'nome_cliente': nome_cliente,
@@ -242,8 +217,6 @@ with dados:
             '[desconto_percentual]': desconto_percentual,
             '[total_final]': total_final
             }
-    #Apagar no futuro
-    # st.write(perguntas_respostas)
 
 # #####################################################################################
 # Abrir documento com papel timbrado da RKP
@@ -358,15 +331,6 @@ for i in range(len(itens_atuacao)):
     format_paragraph(paragraph_itens_atuacao, 3, 0,1.77165, 18, 18, 18)
 
 
-# for item in itens_atuacao:
-#     paragraph_itens_atuacao = document.add_paragraph() #style='List Number'
-#     # Definir o recuo apenas na primeira linha
-#     paragraph_itens_atuacao.paragraph_format.left_indent = Inches(1.77165)
-#     # Definir o alinhamento do parágrafo
-#     paragraph_itens_atuacao.alignment = 3
-#     paragraph_itens_atuacao.add_run(item)
-
-
 #paragrafo I-IV
 paragraph_four = document.add_paragraph()
 format_paragraph(paragraph_four,3, 1.5748,0, 18,18,18)
@@ -400,7 +364,7 @@ add_formatted_text(paragraph_two_two, full_text, bold_text)
 # Adicionar tabela
 table = document.add_table(rows=1, cols=2)
 table.alignment = WD_TABLE_ALIGNMENT.CENTER
-table.style =  None #'LightShading-Accent3'
+table.style =  None 
 # Definir bordas da tabela
 set_table_borders(table)
 # get table data -------------
@@ -544,8 +508,6 @@ else:
             f"""Para a prestação de serviços advocatícios listada no Tópico I, a Roque Khouri & Pinheiro Advogados Associados estima o pagamento de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)}) no ato da assinatura da proposta e o restante dividos em {parcelas_texto} de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
         )
         format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
-
-
 
 #paragrafo III-IV
 paragraph_three_four = document.add_paragraph('Não estão incluídos na proposta ora apresentada eventuais custos com a contratação de advogados correspondentes fora de Brasília, bem como as despesas a serem incorridas em virtude da execução dos serviços, tais como, cópias reprográficas, custas judiciais, honorários periciais, emolumentos com autenticação de cópias e reconhecimento de firmas, obtenção de certidões, motoboys e deslocamentos à razão de R$ 1,00/km, entre outras despesas, as quais serão pagas diretamente por V.Sa. ou reembolsadas mediante a apresentação dos respectivos comprovantes.')
