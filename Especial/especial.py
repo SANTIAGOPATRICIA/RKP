@@ -27,7 +27,10 @@ recuo_adicao = "&nbsp;" * 32
 add_indentation()
 
 # Define o local para português do Brasil
-locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+try:
+    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+except locale.Error as e:
+    print(f"Erro ao definir a localidade: {e}")
 
 # Inicializar DataFrame vazio
 df_inputs = pd.DataFrame(columns=[
