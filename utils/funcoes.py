@@ -218,7 +218,13 @@ def format_title_centered(title):
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER  # Centralizar o título
     title.space_before = Pt(128)
 
-#Função para formatar o titulo justificado
+# #Função para formatar o titulo justificado
+# def format_title_justified(title):
+#     title_format = title.runs[0].font
+#     title_format.name = 'Arial'  # Definir a fonte desejada
+#     title_format.size = Pt(12)   # Definir o tamanho da fonte
+#     title_format.color.rgb = black_color  # Definir a cor (preta)
+    #Função para formatar o titulo justificado
 def format_title_justified(title):
     for run in title.runs:
         run.bold = True
@@ -267,3 +273,15 @@ def num_extenso(valor):
         por_extenso = f'{por_extenso_inteira} reais'
     
     return por_extenso
+
+
+
+
+# Definir a função de concordância nominal para parcelas
+def obter_texto_parcelas(numero):
+    if numero == 1:
+        return 'uma parcela'
+    elif numero == 2:
+        return 'duas parcelas'
+    else:
+        return f"{num2words(numero, lang='pt_BR')} parcelas"
