@@ -441,7 +441,7 @@ format_paragraph(valor_prolabore_inicial, 3, 0,1.5748, 18,18,18)
 valor_honorario_manutencao = document.add_paragraph(f"Honorário de manutenção: Isento durante {prolabore_manutencao} meses. Após este período, se o processo perdurar, será devido o valor de {prolabore_manutencao_valor} salário mínimo mensal;")
 format_paragraph(valor_honorario_manutencao, 3, 0,1.5748, 18,18,18)
 valor_honorario_exito = document.add_paragraph(f'Honorários de Êxito: {exito_percentual_formatado}% ({num_extenso_percentual(exito_percentual_formatado)}) do benefício econômico¹ aferido ao final do processo.')
-valor_honorario_exito.add_footnote('Fica compreendido como benefício econômico todo e qualquer valor que a INTERESSADA receber em razão da propositura da ação ou valor que deixar de pagar.') # add a footnote
+# valor_honorario_exito.add_footnote('Fica compreendido como benefício econômico todo e qualquer valor que a INTERESSADA receber em razão da propositura da ação ou valor que deixar de pagar.') # add a footnote
 format_paragraph(valor_honorario_exito, 3, 0,1.5748, 18,18,18)
 
 #desconto do contencioso
