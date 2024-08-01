@@ -408,7 +408,7 @@ if parcelamento == None:
     valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)});')
     format_paragraph(valor_prolabore_inicial, 3, 0, 1.5748, 18, 18, 18)
 elif parcelamento == 'Regular':
-    valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)}), podendo ser divido em {parcelas_texto} mensais consecutivas de R$ {valor_parcelamento}, a ser paga na assinatura deste contrato;')
+    valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)}), podendo ser divido em {parcelas_texto} mensais consecutivas de R$ {valor_parcelamento}, sendo a primeira a ser paga na assinatura deste contrato;')
     format_paragraph(valor_prolabore_inicial, 3, 0, 1.5748, 18, 18, 18)
 else:
     valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)}), sendo a primeira parcela no valor de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)}) a ser paga na assinatura deste contrato, e {parcelas_texto} mensais consecutivas no valor de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)});')
