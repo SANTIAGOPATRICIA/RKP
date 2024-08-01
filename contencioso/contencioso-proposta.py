@@ -5,7 +5,7 @@ from streamlit_gsheets import GSheetsConnection
 from st_pages import add_indentation
 import docx
 from docx import Document
-from docx.shared import Inches, Pt
+from docx.shared import Pt
 from datetime import datetime
 import locale
 import time
@@ -16,9 +16,10 @@ from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 import re
 from num2words import num2words
+from tempfile import NamedTemporaryFile
 from utils.funcoes import format_paragraph, add_formatted_text, format_title_centered, \
     format_title_justified, num_extenso, data_extenso, fonte_name_and_size, add_section,\
-    num_extenso_percentual, set_table_borders, add_paragraph_with_footnote
+    num_extenso_percentual, set_table_borders, obter_texto_parcelas
 
 ##########################################################
 
@@ -47,17 +48,16 @@ lista_numerada = ['a)', 'b)', 'c)', 'd)', 'e)', 'f)', 'g)', 'h)', 'i)', 'j)', 'k
 
 
 ############################################################
+recuo = "&nbsp;" * 24
 
-st.set_page_config(layout="wide")
+
+# st.set_page_config(layout="wide")
 
 add_indentation()
 
 # Define o local para português do Brasil
-try:
-    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
-except locale.Error as e:
-    print(f"Erro ao definir a localidade: {e}")
-
+import locale
+locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
 # Carregar o CSV existente ou criar um novo DataFrame
 try:
@@ -85,9 +85,8 @@ with dados:
     # contencioso_data = conn.read(worksheet="bd-contencioso")
 
     # Carregando a lista de clientes pela primeira vez
-    conn = st.connection("gsheets", type=GSheetsConnection)
-    existing_data = conn.read(worksheet="cliente", ttls=5, usecols=[1])
-    lista_clientes = existing_data.sort_values(by='Nome')['Nome'].unique().tolist()
+    lista_clientes = pd.read_csv('clientes.csv')
+    lista_clientes = lista_clientes.sort_values(by='Nome')['Nome'].unique().tolist()
 
     # Adiciona uma opção para cadastrar novo cliente
     lista_clientes.append("--Novo cliente--")
@@ -135,7 +134,9 @@ with dados:
 
     numero_parcelas_formatado = ''
     valor_entrada_formatado = ''
-    parcelamento_restante = ''
+    numero_parcelas = 0
+    parcelamento_restante = 0
+
     if parcelamento != None:
         if parcelamento == 'Regular':
             numero_parcelas = st.selectbox('nº de parcelas', options=range(2,25))
@@ -177,14 +178,14 @@ with dados:
     exito_percentual_formatado = "0.00"
     exito_outro_texto = ""
 
-    if tipo_exito != None:
-        if tipo_exito == 'benefício econômico':
-            exito_percentual = st.number_input('Percentual do benefício econômico (%)', min_value=0.0, max_value=100.0, step=0.5, key='exito_percentual')
-            exito_percentual_formatado = "{:.2f}".format(round(exito_percentual, 2))
-        else:
-            exito_percentual = st.number_input('Percentual (%)', min_value=0.0, max_value=100.0, step=0.5, key='exito_percentual')
-            exito_percentual_formatado = "{:.2f}".format(round(exito_percentual, 2))
-            exito_outro_texto = st.text_area('texto')
+    # if tipo_exito != None:
+    if tipo_exito == 'benefício econômico':
+        exito_percentual = st.number_input('Percentual do benefício econômico (%)', min_value=0.0, max_value=100.0, step=0.5, key='exito_percentual')
+        exito_percentual_formatado = "{:.2f}".format(round(exito_percentual, 2))
+    else:
+        exito_percentual = st.number_input('Percentual (%)', min_value=0.0, max_value=100.0, step=0.5, key='exito_percentual')
+        exito_percentual_formatado = "{:.2f}".format(round(exito_percentual, 2))
+        exito_outro_texto = st.text_area('texto')
 
     # Input para o valor teto do êxito
     valor_teto_exito = st.number_input('Valor teto do êxito (R$)', key='valor_teto_exito')
@@ -287,7 +288,7 @@ lista_numerada_servicos = lista_numerada[:len(itens_atuacao)]
 # Serviços a serem prestados
 for i in range(len(itens_atuacao)):
     paragrafo_ = document.add_paragraph(f'{lista_numerada[i]} {itens_atuacao[i]}')
-    format_paragraph(paragrafo_, 3, 0,1.385827, 18, 18, 18)
+    format_paragraph(paragrafo_, 3, 0, 1.5748, 18,18,18)
 
 
 #paragrafo I-IV
@@ -397,6 +398,11 @@ format_title_justified(title_three)
 paragraph_three_one_one = document.add_paragraph('Os honorários advocatícios devidos em consequência da prestação de serviços previstas no item I seriam assim determinados:')
 format_paragraph(paragraph_three_one_one, 3, 1.5748, 0,18,18,18)
 
+#concordancia nominal das parcelas
+parcelas_texto = obter_texto_parcelas(numero_parcelas)
+# Atualizar 'parcelas_texto' caso o parcelamento seja 'Entrada + parcelas'
+if parcelamento == 'Entrada + parcelas':
+    parcelas_texto = obter_texto_parcelas(parcelamento_restante)
 
 # valor atuação contencioso
 #pro-labore inicial
@@ -404,10 +410,10 @@ if parcelamento == None:
     valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)});')
     format_paragraph(valor_prolabore_inicial, 3, 0, 1.5748, 18, 18, 18)
 elif parcelamento == 'Regular':
-    valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)}), podendo ser divido em {num2words(int(numero_parcelas), lang="pt_BR")} parcelas mensais consecutivas de R$ {valor_parcelamento}, a ser paga na assinatura deste contrato;')
+    valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)}), podendo ser divido em {parcelas_texto} mensais consecutivas de R$ {valor_parcelamento}, a ser paga na assinatura deste contrato;')
     format_paragraph(valor_prolabore_inicial, 3, 0, 1.5748, 18, 18, 18)
 else:
-    valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)}), sendo a primeira parcela no valor de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)}) a ser paga na assinatura deste contrato, e {num2words(int(parcelamento_restante), lang="pt_BR")} parcelas mensais consecutivas no valor de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)});')
+    valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)}), sendo a primeira parcela no valor de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)}) a ser paga na assinatura deste contrato, e {parcelas_texto} mensais consecutivas no valor de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)});')
     format_paragraph(valor_prolabore_inicial, 3, 0, 1.5748, 18, 18, 18)
 
 
@@ -420,13 +426,13 @@ else:
     format_paragraph(valor_honorario_manutencao, 3, 0, 1.5748, 18,18,18)
 
 #exito
-if tipo_exito == 'beneficio econômico':
+if tipo_exito == 'benefício econômico':
     valor_honorario_exito = document.add_paragraph(f'c) Honorários de Êxito: {exito_percentual_formatado}% ({num_extenso_percentual(exito_percentual_formatado)}) do benefício econômico¹ aferido ao final do processo.')
-    valor_honorario_exito.add_footnote('Fica compreendido como benefício econômico todo e qualquer valor que a INTERESSADA receber em razão da propositura da ação ou valor que deixar de pagar.') # add a footnote
+    # valor_honorario_exito.add_footnote('Fica compreendido como benefício econômico todo e qualquer valor que a INTERESSADA receber em razão da propositura da ação ou valor que deixar de pagar.') # add a footnote
     format_paragraph(valor_honorario_exito, 3, 0, 1.5748, 18,18,18)
 else:
     valor_honorario_exito = document.add_paragraph(f'c) Honorários de Êxito: {exito_percentual_formatado}% ({num_extenso_percentual(exito_percentual_formatado)}) {exito_outro_texto}.')
-    valor_honorario_exito.add_footnote('Em caso de acordo parcial, fica estipulado que o êxito poderá ser compatível com a redução que vier a ser atingida. ') # add a footnote
+    # valor_honorario_exito.add_footnote('Em caso de acordo parcial, fica estipulado que o êxito poderá ser compatível com a redução que vier a ser atingida.') # add a footnote
     format_paragraph(valor_honorario_exito, 3, 0, 1.5748, 18,18,18)
 
 #paragrafo III-IV
@@ -493,7 +499,12 @@ with desenvolvimento:
         if nome_cliente:
             break
         time.sleep(2)
-    st.write(paragraph_date.text)
+    st.markdown(f"""
+        <div style="text-align: right;">
+            {paragraph_date.text}
+        </div>
+        """, unsafe_allow_html=True)
+    
     st.markdown(title.text)
     # st.write(p_de.text)
     st.write(f'**{paragraph_para.text}**')
@@ -507,38 +518,72 @@ with desenvolvimento:
         time.sleep(2)
 
     if input_contencioso_objeto:
-        st.write(f'{paragraph_objeto.text}')
-    
-    st.write("A atuação desse Jurídico compreenderá as seguintes atividades:")
+        st.markdown(f"""
+        <div style="text-align: justify;">
+        {paragraph_objeto.text}
+        </div>
+        """, unsafe_allow_html=True)
+        st.write("")
+        st.markdown(f"""
+        <div style="text-align: justify;">
+        A atuação desse Jurídico compreenderá as seguintes atividades:
+        </div>
+        """, unsafe_allow_html=True)
+
     # Recuo para os itens
-    recuo = "&nbsp;" * 24
-    for item in itens_atuacao:
-        st.markdown(f"{recuo}-  {item}")
     
+    for item in itens_atuacao:
+        st.markdown(f"""
+        <div style="text-align: justify;">
+        {recuo}-  {item}
+        </div>
+        """, unsafe_allow_html=True)
+        
+    st.write("")
     st.write(f'*Texto padrão sobre: disposição de equipe, alerta sobre risco jurídico e política de honorários*')
     st.write("")
-    st.write(title_three.text)
+    st.markdown(f"""
+    <div style="text-align: justify;">
+    {title_three.text}
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.write("")
+    st.markdown(f"""
+    <div style="text-align: justify;">
+    {paragraph_three_one_one.text}
+    </div>
+    """, unsafe_allow_html=True)
+
+
     if prolabore_inicial > 0.0:
-        st.markdown(f"{recuo}{valor_prolabore_inicial.text}")
-        # st.write(valor_prolabore_inicial.text)
-        st.markdown(f"{recuo}{valor_honorario_manutencao.text}")
-        # st.write(valor_honorario_manutencao.text)
-        st.markdown(f"{recuo}{valor_honorario_exito.text}")
-        # st.write(valor_honorario_exito.text)
-        # st.markdown(f"{recuo}{paragraph_desconto_contencioso.text}")
-        # st.write(paragraph_desconto_consultivo.text)
+        st.markdown(f"""
+        <div style="text-align: justify;">
+        <p>{recuo}{valor_prolabore_inicial.text}</p>
+        <p>{recuo}{valor_honorario_manutencao.text}</p>
+        <p>{recuo}{valor_honorario_exito.text}</p>
+        <p><i>Texto padrão sobre os eventuais custos com a contratação de advogads e despesas relativas a custas judiciais</i></p>
+        <p>{paragraph_three_four_two.text}</p>
+        <p>{paragraph_three_four_two.text}</p>
+        <p><i>Texto padrão sobre a necessidade de novo valor de honorários se propositura de nova ação judicial.</i></p>        
+        <p>{title_iv.text}</p>        
+        <p><i>Texto padrão sobre confidencialidade.</i></p>                
+        </div>
+        """, unsafe_allow_html=True)
+        
+    st.write("")
+    st.write("")
+    st.write("")
 
-    st.write('*Texto padrão sobre os eventuais custos com a contratação de advogads e despesas relativas a custas judiciais*')
-    # st.write(paragraph_three_four.text)
-    # st.write(paragraph_three_four_one.text)
-    st.write(paragraph_three_four_two.text)
-    st.write("*Texto padrão sobre a necessidade de novo valor de honorários se propositura de nova ação judicial*")
-    # st.write(paragraph_three_five.text)
-    st.write(title_iv.text)
-    st.write("*texto padrão*")
-    if st.button('Salvar'):
+    # Salvar documento em arquivo temporário e permitir download
+    with NamedTemporaryFile(delete=False, suffix='.docx') as tmp_file:
+        document.save(tmp_file.name)
+        st.download_button(
+            label="Baixar Documento",
+            data=open(tmp_file.name, 'rb').read(),
+            file_name=f'proposta_contencioso_{nome_cliente}.docx',
+            mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
+    if st.button('Salvar dados'):
         novo_dado = {
             'nome_cliente': nome_cliente,
             'objeto_contencioso': input_contencioso_objeto,
@@ -564,20 +609,9 @@ with desenvolvimento:
         df_inputs = df_inputs.append(novo_dado, ignore_index=True)
         # Salvar o DataFrame atualizado no CSV
         df_inputs.to_csv('df_inputs.csv', index=False)
-        # # Adicionar o novo dado ao DataFrame existente
-        # df_novo_dado = pd.DataFrame([novo_dado])
-        # updated_data = pd.concat([contencioso_data, df_novo_dado], ignore_index=True)
 
         # Limpar caracteres especiais no nome do cliente
-        nome_cliente_formatado = re.sub(r'[^\w\s]', '_', nome_cliente)
-        document.save(f".\documentos_gerados\proposta_contencioso_{nome_cliente_formatado}.docx")
-        st.success('Dados salvos com sucesso!')
+        # nome_cliente_formatado = re.sub(r'[^\w\s]', '_', nome_cliente)
+        # document.save(f".\documentos_gerados\proposta_contencioso_{nome_cliente_formatado}.docx")
+        # st.success('Dados salvos com sucesso!')
     
-    # Verificar se há registros
-    # if len(contencioso_data) > 0:
-    #     # Exibir o último registro válido (não vazio)
-    #     registro_a_trabalhar = contencioso_data.iloc[-1]
-    #     st.write("Último registro:", registro_a_trabalhar)
-    #     st.write("Nome do cliente do último registro:", registro_a_trabalhar["nome_cliente"])
-    # else:
-    #     st.write("Nenhum registro encontrado.")
