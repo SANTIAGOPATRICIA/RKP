@@ -80,10 +80,6 @@ with dados:
     # st.table(df_inputs)
     st.write('**Informação proposta - contencioso**')
 
-    #Carregando o arquvio do google sheets
-    # conn = st.connection("gsheets", type=GSheetsConnection)
-    # contencioso_data = conn.read(worksheet="bd-contencioso")
-
     # Carregando a lista de clientes pela primeira vez
     lista_clientes = pd.read_csv('clientes.csv')
     lista_clientes = lista_clientes.sort_values(by='Nome')['Nome'].unique().tolist()
@@ -201,7 +197,7 @@ with dados:
 
 # #####################################################################################
 # Abrir documento com papel timbrado da RKP
-document = docx.Document(r".\docx\RKP-PapelTimbrado.docx")
+document = docx.Document(r"docx/RKP-PapelTimbrado.docx")
 
 # Definir fonte e tamanho do documento
 fonte_name_and_size(document, 'Arial', 12)
