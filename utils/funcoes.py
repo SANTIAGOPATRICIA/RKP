@@ -10,11 +10,20 @@ import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 from docx.shared import Inches
 from docx.oxml.ns import qn
+import sqlite3
 
 
 # Cor preta
 black_color = RGBColor(0, 0, 0)
 
+
+def load_data():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM propostas")
+    data = c.fetchall()
+    conn.close()
+    return data
 
 def atualizar_base_dados():
     """
@@ -259,20 +268,42 @@ def num_extenso_percentual(valor):
 #Tratamento do valor por extenso
 def num_extenso(valor):
     # Separa o valor em parte inteira e decimal
-    parte_inteira, parte_decimal = str(valor).split('.')
-    
-    # Processa a parte inteira por extenso
-    por_extenso_inteira = num2words(int(parte_inteira), lang='pt_BR')
+    if valor is not None:
+        parte_inteira, parte_decimal = str(valor).split('.')
+        
+        # Processa a parte inteira por extenso
+        por_extenso_inteira = num2words(int(parte_inteira), lang='pt_BR')
 
-    # Se houver centavos, processa-os por extenso
-    if parte_decimal != '00' or parte_decimal == '0':
-        por_extenso_decimal = num2words(int(parte_decimal), lang='pt_BR')
-        # Formatação específica para valores monetários
-        por_extenso = f'{por_extenso_inteira} reais e {por_extenso_decimal} centavos'
-    else:
-        por_extenso = f'{por_extenso_inteira} reais'
+        # Se houver centavos, processa-os por extenso
+        if parte_decimal != '00' or parte_decimal == '0':
+            por_extenso_decimal = num2words(int(parte_decimal), lang='pt_BR')
+            # Formatação específica para valores monetários
+            por_extenso = f'{por_extenso_inteira} reais e {por_extenso_decimal} centavos'
+        else:
+            por_extenso = f'{por_extenso_inteira} reais'
     
     return por_extenso
+
+
+# def num_extenso(valor):
+#     valor = str(valor)
+#     if '.' in valor:
+#         parte_inteira, parte_decimal = valor.split('.')
+#     else:
+#         parte_inteira, parte_decimal = valor, '00'
+    
+#     # Processa a parte inteira por extenso
+#     por_extenso_inteira = num2words(int(parte_inteira), lang='pt_BR')
+
+#     # Se houver centavos, processa-os por extenso
+#     if parte_decimal != '00' and parte_decimal != '0':
+#         por_extenso_decimal = num2words(int(parte_decimal), lang='pt_BR')
+#         # Formatação específica para valores monetários
+#         por_extenso = f'{por_extenso_inteira} reais e {por_extenso_decimal} centavos'
+#     else:
+#         por_extenso = f'{por_extenso_inteira} reais'
+    
+#     return por_extenso
 
 
 
