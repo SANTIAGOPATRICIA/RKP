@@ -21,36 +21,8 @@ import sqlite3
 from utils.funcoes import format_paragraph, add_formatted_text, format_title_centered, \
     format_title_justified, num_extenso, data_extenso, fonte_name_and_size, add_section,\
     num_extenso_percentual, set_table_borders, obter_texto_parcelas
-##########################################################
 
-def create_table():
-    conn = sqlite3.connect('database.db')  # Substitua 'database.db' pelo caminho correto
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS propostas (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome_cliente TEXT,
-            objeto_contencioso TEXT,
-            instancia_superior TEXT,
-            orgao TEXT,
-            itens_atuacao TEXT,
-            pro_labore_inicial TEXT,
-            parcelamento TEXT,
-            numero_parcelas_formatado TEXT,
-            valor_entrada TEXT,
-            parcelamento_restante TEXT,
-            pro_labore_manutencao TEXT,
-            pro_labore_manutencao_valor_sm TEXT,
-            tipo_exito TEXT,
-            exito_percentual_formatado TEXT,
-            exito_texto TEXT,
-            exito_valor_teto TEXT,
-            tempo_expectativa TEXT
-        )
-    ''')
-    conn.commit()
-    conn.close()
-create_table()
+##########################################################
 
 ## listas necessárias
 
@@ -85,10 +57,8 @@ recuo = "&nbsp;" * 24
 add_indentation()
 
 # Define o local para português do Brasil
-try:
-    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
-except locale.Error as e:
-    print(f"Erro ao definir a localidade: {e}")
+import locale
+locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
 # Carregar o CSV existente ou criar um novo DataFrame
 try:
@@ -705,4 +675,3 @@ if st.button('Salvar dados'):
     }
     save_to_db(novo_dado)
     st.success("Dados salvos com sucesso!")
-
