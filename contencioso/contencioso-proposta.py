@@ -20,9 +20,10 @@ from tempfile import NamedTemporaryFile
 import sqlite3
 from utils.funcoes import format_paragraph, add_formatted_text, format_title_centered, \
     format_title_justified, num_extenso, data_extenso, fonte_name_and_size, add_section,\
-    num_extenso_percentual, set_table_borders, obter_texto_parcelas
+    num_extenso_percentual, set_table_borders, obter_texto_parcelas, create_table
 
 ##########################################################
+create_table()
 
 ## listas necessárias
 
@@ -57,10 +58,8 @@ recuo = "&nbsp;" * 24
 add_indentation()
 
 # Define o local para português do Brasil
-try:
-    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
-except locale.Error as e:
-    print(f"Erro ao definir a localidade: {e}")
+import locale
+locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
 # Carregar o CSV existente ou criar um novo DataFrame
 try:
