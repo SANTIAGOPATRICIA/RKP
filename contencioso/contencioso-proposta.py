@@ -57,8 +57,10 @@ recuo = "&nbsp;" * 24
 add_indentation()
 
 # Define o local para português do Brasil
-import locale
-locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+try:
+    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+except locale.Error as e:
+    print(f"Erro ao definir a localidade: {e}")
 
 # Carregar o CSV existente ou criar um novo DataFrame
 try:
@@ -78,12 +80,7 @@ if "visibility" not in st.session_state:
 dados, desenvolvimento = st.columns([2, 3])
 
 with dados:
-    # st.table(df_inputs)
     st.write('**Informação proposta - contencioso**')
-
-    #Carregando o arquvio do google sheets
-    # conn = st.connection("gsheets", type=GSheetsConnection)
-    # contencioso_data = conn.read(worksheet="bd-contencioso")
 
     # Carregando a lista de clientes pela primeira vez
     lista_clientes = pd.read_csv('clientes.csv')
