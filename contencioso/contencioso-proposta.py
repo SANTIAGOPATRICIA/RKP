@@ -17,6 +17,7 @@ from docx.oxml import OxmlElement
 import re
 from num2words import num2words
 from tempfile import NamedTemporaryFile
+import sqlite3
 from utils.funcoes import format_paragraph, add_formatted_text, format_title_centered, \
     format_title_justified, num_extenso, data_extenso, fonte_name_and_size, add_section,\
     num_extenso_percentual, set_table_borders, obter_texto_parcelas
@@ -56,10 +57,8 @@ recuo = "&nbsp;" * 24
 add_indentation()
 
 # Define o local para português do Brasil
-try:
-    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
-except locale.Error as e:
-    print(f"Erro ao definir a localidade: {e}")
+import locale
+locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
 # Carregar o CSV existente ou criar um novo DataFrame
 try:
@@ -81,6 +80,10 @@ dados, desenvolvimento = st.columns([2, 3])
 with dados:
     # st.table(df_inputs)
     st.write('**Informação proposta - contencioso**')
+
+    #Carregando o arquvio do google sheets
+    # conn = st.connection("gsheets", type=GSheetsConnection)
+    # contencioso_data = conn.read(worksheet="bd-contencioso")
 
     # Carregando a lista de clientes pela primeira vez
     lista_clientes = pd.read_csv('clientes.csv')
@@ -199,7 +202,7 @@ with dados:
 
 # #####################################################################################
 # Abrir documento com papel timbrado da RKP
-document = docx.Document(r"docx/RKP-PapelTimbrado.docx")
+document = docx.Document(r".\docx\RKP-PapelTimbrado.docx")
 
 # Definir fonte e tamanho do documento
 fonte_name_and_size(document, 'Arial', 12)
@@ -408,7 +411,7 @@ if parcelamento == None:
     valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)});')
     format_paragraph(valor_prolabore_inicial, 3, 0, 1.5748, 18, 18, 18)
 elif parcelamento == 'Regular':
-    valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)}), podendo ser divido em {parcelas_texto} mensais consecutivas de R$ {valor_parcelamento}, sendo a primeira a ser paga na assinatura deste contrato;')
+    valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)}), podendo ser divido em {parcelas_texto} mensais consecutivas de R$ {valor_parcelamento}, a ser paga na assinatura deste contrato;')
     format_paragraph(valor_prolabore_inicial, 3, 0, 1.5748, 18, 18, 18)
 else:
     valor_prolabore_inicial = document.add_paragraph(f'a) Pró-labore inicial mínimo: R$ {prolabore_inicial_formatado} ({num_extenso(prolabore_inicial_formatado)}), sendo a primeira parcela no valor de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)}) a ser paga na assinatura deste contrato, e {parcelas_texto} mensais consecutivas no valor de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)});')
@@ -561,7 +564,7 @@ with desenvolvimento:
         <p>{recuo}{valor_honorario_exito.text}</p>
         <p><i>Texto padrão sobre os eventuais custos com a contratação de advogads e despesas relativas a custas judiciais</i></p>
         <p>{paragraph_three_four_two.text}</p>
-        <p>{paragraph_three_four_two.text}</p>
+        # <p>{paragraph_three_four_two.text}</p>
         <p><i>Texto padrão sobre a necessidade de novo valor de honorários se propositura de nova ação judicial.</i></p>        
         <p>{title_iv.text}</p>        
         <p><i>Texto padrão sobre confidencialidade.</i></p>                
@@ -581,35 +584,95 @@ with desenvolvimento:
             file_name=f'proposta_contencioso_{nome_cliente}.docx',
             mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         )
-    if st.button('Salvar dados'):
-        novo_dado = {
-            'nome_cliente': nome_cliente,
-            'objeto_contencioso': input_contencioso_objeto,
-            'instancia_superior': instancia_,
-            'orgao': orgao_,
-            'itens_atuacao': itens_atuacao,
-            'pro_labore_inicial': prolabore_inicial_formatado,
-            # 'pro_labore_inicial_desconto':prolabore_inicial_com_desconto_fomatado,
-            'parcelamento': parcelamento,
-            'numero_parcelas_formatado': numero_parcelas_formatado,
-            'valor_entrada': valor_entrada_formatado,
-            'parcelamento_restante': parcelamento_restante,
-            'valor_parcelamento_formatado': valor_parcelamento_formatado,
-            'pro_labore_manutencao': prolabore_manutencao,
-            'pro_labore_manutencao_valor_sm': prolabore_manutencao_valor,
-            'tipo_exito': tipo_exito,
-            'exito_percentual_formatado': exito_percentual_formatado,
-            'exito_texto': exito_outro_texto,
-            'exito_valor_teto': valor_teto_exito_formatado,
-            'tempo_expectativa': expectativa_tempo,
-            }
+    # if st.button('Salvar dados'):
+    #     novo_dado = {
+    #         'nome_cliente': nome_cliente,
+    #         'objeto_contencioso': input_contencioso_objeto,
+    #         'instancia_superior': instancia_,
+    #         'orgao': orgao_,
+    #         'itens_atuacao': itens_atuacao,
+    #         'pro_labore_inicial': prolabore_inicial_formatado,
+    #         # 'pro_labore_inicial_desconto':prolabore_inicial_com_desconto_fomatado,
+    #         'parcelamento': parcelamento,
+    #         'numero_parcelas_formatado': numero_parcelas_formatado,
+    #         'valor_entrada': valor_entrada_formatado,
+    #         'parcelamento_restante': parcelamento_restante,
+    #         'valor_parcelamento_formatado': valor_parcelamento_formatado,
+    #         'pro_labore_manutencao': prolabore_manutencao,
+    #         'pro_labore_manutencao_valor_sm': prolabore_manutencao_valor,
+    #         'tipo_exito': tipo_exito,
+    #         'exito_percentual_formatado': exito_percentual_formatado,
+    #         'exito_texto': exito_outro_texto,
+    #         'exito_valor_teto': valor_teto_exito_formatado,
+    #         'tempo_expectativa': expectativa_tempo,
+    #         }
         
-        df_inputs = df_inputs.append(novo_dado, ignore_index=True)
-        # Salvar o DataFrame atualizado no CSV
-        df_inputs.to_csv('df_inputs.csv', index=False)
+    #     df_inputs = df_inputs.append(novo_dado, ignore_index=True)
+    #     # Salvar o DataFrame atualizado no CSV
+    #     df_inputs.to_csv('df_inputs.csv', index=False)
 
         # Limpar caracteres especiais no nome do cliente
         # nome_cliente_formatado = re.sub(r'[^\w\s]', '_', nome_cliente)
         # document.save(f".\documentos_gerados\proposta_contencioso_{nome_cliente_formatado}.docx")
         # st.success('Dados salvos com sucesso!')
     
+
+
+def save_to_db(novo_dado):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('''
+        INSERT INTO propostas (
+            nome_cliente, objeto_contencioso, instancia_superior, orgao, itens_atuacao,
+            pro_labore_inicial, parcelamento, numero_parcelas_formatado, valor_entrada,
+            parcelamento_restante, valor_parcelamento_formatado, pro_labore_manutencao,
+            pro_labore_manutencao_valor_sm, tipo_exito, exito_percentual_formatado,
+            exito_texto, exito_valor_teto, tempo_expectativa
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (
+        novo_dado['nome_cliente'], novo_dado['objeto_contencioso'], novo_dado['instancia_superior'],
+        novo_dado['orgao'], ','.join(novo_dado['itens_atuacao']),  # Converting list to string
+        novo_dado['pro_labore_inicial'], novo_dado['parcelamento'], novo_dado['numero_parcelas_formatado'],
+        novo_dado['valor_entrada'], novo_dado['parcelamento_restante'], novo_dado['valor_parcelamento_formatado'],
+        novo_dado['pro_labore_manutencao'], novo_dado['pro_labore_manutencao_valor_sm'],
+        novo_dado['tipo_exito'], novo_dado['exito_percentual_formatado'], novo_dado['exito_texto'],
+        novo_dado['exito_valor_teto'], novo_dado['tempo_expectativa']
+    ))
+    conn.commit()
+    conn.close()
+
+
+with NamedTemporaryFile(delete=False, suffix='.docx') as tmp_file:
+    document.save(tmp_file.name)
+    st.download_button(
+        label="Baixar Documento",
+        data=open(tmp_file.name, 'rb').read(),
+        file_name=f'proposta_contencioso_{nome_cliente}.docx',
+        mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        key='proposta_contencioso'
+            )
+
+if st.button('Salvar dados'):
+    novo_dado = {
+        'nome_cliente': nome_cliente,
+        'objeto_contencioso': input_contencioso_objeto,
+        'instancia_superior': instancia_,
+        'orgao': orgao_,
+        'itens_atuacao': itens_atuacao,
+        'pro_labore_inicial': prolabore_inicial_formatado,
+        'parcelamento': parcelamento,
+        'numero_parcelas_formatado': numero_parcelas_formatado,
+        'valor_entrada': valor_entrada_formatado,
+        'parcelamento_restante': parcelamento_restante,
+        'valor_parcelamento_formatado': valor_parcelamento_formatado,
+        'pro_labore_manutencao': prolabore_manutencao,
+        'pro_labore_manutencao_valor_sm': prolabore_manutencao_valor,
+        'tipo_exito': tipo_exito,
+        'exito_percentual_formatado': exito_percentual_formatado,
+        'exito_texto': exito_outro_texto,
+        'exito_valor_teto': valor_teto_exito_formatado,
+        'tempo_expectativa': expectativa_tempo,
+    }
+    save_to_db(novo_dado)
+    st.success("Dados salvos com sucesso!")
+
