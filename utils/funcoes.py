@@ -16,7 +16,6 @@ import sqlite3
 # Cor preta
 black_color = RGBColor(0, 0, 0)
 
-import sqlite3
 
 def create_table():
     conn = sqlite3.connect('database.db')  # Substitua 'database.db' pelo caminho correto
