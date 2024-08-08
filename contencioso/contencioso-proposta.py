@@ -23,7 +23,7 @@ from utils.funcoes import format_paragraph, add_formatted_text, format_title_cen
     num_extenso_percentual, set_table_borders, obter_texto_parcelas#, create_table
 
 ##########################################################
-create_table()
+# create_table()
 
 ## listas necessárias
 
