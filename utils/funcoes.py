@@ -18,12 +18,16 @@ black_color = RGBColor(0, 0, 0)
 
 
 def load_data():
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    c.execute("SELECT * FROM propostas")
-    data = c.fetchall()
-    conn.close()
-    return data
+    try:
+        conn = sqlite3.connect('database.db')  # Substitua 'database.db' pelo caminho correto
+        c = conn.cursor()
+        c.execute("SELECT * FROM propostas")
+        data = c.fetchall()
+        conn.close()
+        return data
+    except sqlite3.Error as e:
+        st.error(f"Erro ao carregar dados do banco de dados: {e}")
+        return None
 
 def atualizar_base_dados():
     """
