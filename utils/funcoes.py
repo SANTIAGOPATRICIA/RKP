@@ -17,33 +17,33 @@ import sqlite3
 black_color = RGBColor(0, 0, 0)
 
 
-def create_table():
-    conn = sqlite3.connect('database.db')  # Substitua 'database.db' pelo caminho correto
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS propostas (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome_cliente TEXT,
-            objeto_contencioso TEXT,
-            instancia_superior TEXT,
-            orgao TEXT,
-            itens_atuacao TEXT,
-            pro_labore_inicial TEXT,
-            parcelamento TEXT,
-            numero_parcelas_formatado TEXT,
-            valor_entrada TEXT,
-            parcelamento_restante TEXT,
-            pro_labore_manutencao TEXT,
-            pro_labore_manutencao_valor_sm TEXT,
-            tipo_exito TEXT,
-            exito_percentual_formatado TEXT,
-            exito_texto TEXT,
-            exito_valor_teto TEXT,
-            tempo_expectativa TEXT
-        )
-    ''')
-    conn.commit()
-    conn.close()
+# def create_table():
+#     conn = sqlite3.connect('database.db')  # Substitua 'database.db' pelo caminho correto
+#     c = conn.cursor()
+#     c.execute('''
+#         CREATE TABLE IF NOT EXISTS propostas (
+#             id INTEGER PRIMARY KEY AUTOINCREMENT,
+#             nome_cliente TEXT,
+#             objeto_contencioso TEXT,
+#             instancia_superior TEXT,
+#             orgao TEXT,
+#             itens_atuacao TEXT,
+#             pro_labore_inicial TEXT,
+#             parcelamento TEXT,
+#             numero_parcelas_formatado TEXT,
+#             valor_entrada TEXT,
+#             parcelamento_restante TEXT,
+#             pro_labore_manutencao TEXT,
+#             pro_labore_manutencao_valor_sm TEXT,
+#             tipo_exito TEXT,
+#             exito_percentual_formatado TEXT,
+#             exito_texto TEXT,
+#             exito_valor_teto TEXT,
+#             tempo_expectativa TEXT
+#         )
+#     ''')
+#     conn.commit()
+#     conn.close()
 
 
 
