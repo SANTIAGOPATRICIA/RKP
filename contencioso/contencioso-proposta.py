@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from streamlit_gsheets import GSheetsConnection
+# from streamlit_gsheets import GSheetsConnection
 from st_pages import add_indentation
 import docx
 from docx import Document
@@ -10,13 +10,11 @@ import locale
 import time
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.style import WD_STYLE_TYPE
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 import re
-from num2words import num2words
+# from num2words import num2words
 from tempfile import NamedTemporaryFile
-import sqlite3
 from utils.funcoes import format_paragraph, add_formatted_text, format_title_centered, \
     format_title_justified, num_extenso, data_extenso, fonte_name_and_size, add_section,\
     num_extenso_percentual, set_table_borders, obter_texto_parcelas
