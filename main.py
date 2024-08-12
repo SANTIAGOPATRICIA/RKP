@@ -9,7 +9,7 @@ def get_base64_encoded_image(image_path):
     return encoded_img
 
 # Exemplo de logo, insira o caminho correto da imagem
-logo_path = "./img/logoRKP.png"
+logo_path = "img/logoRKP.png"
 encoded_logo = get_base64_encoded_image(logo_path)
 
 # Adicionar a logo ao topo do menu lateral
