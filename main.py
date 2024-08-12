@@ -1,6 +1,32 @@
 import streamlit as st
 # from streamlit_google_auth import Authenticate
+import base64
 
+# Carregar a imagem da logo
+def get_base64_encoded_image(image_path):
+    with open(image_path, "rb") as img_file:
+        encoded_img = base64.b64encode(img_file.read()).decode()
+    return encoded_img
+
+# Exemplo de logo, insira o caminho correto da imagem
+logo_path = "./img/logoRKP.png"
+encoded_logo = get_base64_encoded_image(logo_path)
+
+# Adicionar a logo ao topo do menu lateral
+st.markdown(
+    f"""
+    <style>
+        [data-testid="stSidebar"] {{
+            background-image: url("data:image/png;base64,{encoded_logo}");
+            background-size: 75px;
+            background-repeat: no-repeat;
+            background-position: 28px 64px; /* 32px à esquerda e 64px abaixo do topo */
+            padding-top: 72x; /* Compensar a altura da logo para que o conteúdo comece abaixo dela */
+        }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 # authenticator = Authenticate(
 #     secret_credentials_path='client_secret.json',
 #     cookie_name='my_cookie_name',
