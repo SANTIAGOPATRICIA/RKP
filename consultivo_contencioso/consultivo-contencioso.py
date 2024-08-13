@@ -128,6 +128,7 @@ with dados:
 
 
     #Valores do consultivo
+    st.divider()
     st.write('Valor do consultivo')
     #hora total
     hora_total = st.number_input(label='Total de horas:', step=10, key='hora_total_')
