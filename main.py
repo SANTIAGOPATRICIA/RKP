@@ -21,7 +21,7 @@ st.markdown(
             background-size: 75px;
             background-repeat: no-repeat;
             background-position: 28px 64px; /* 32px à esquerda e 64px abaixo do topo */
-            padding-top: 96x; /* Compensar a altura da logo para que o conteúdo comece abaixo dela */
+            padding-top: 120x; /* Compensar a altura da logo para que o conteúdo comece abaixo dela */
         }}
     </style>
     """,
