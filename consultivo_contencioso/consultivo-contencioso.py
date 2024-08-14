@@ -317,7 +317,7 @@ paragraph_four.text ='Para o cumprimento dos serviços, o escritório disponibil
 #paragrafo I-V
 paragraph_five = document.add_paragraph()
 format_paragraph(paragraph_five,3, 1.5748,0, 18,18,18)
-paragraph_five.text ='A Roque Khouri & Pinheiro Advogados Associados alerta que a análise e confecção de contrato é realizada com base no direito aplicável, jurisprudência atual e principalmente nas informações e documentos que serão sempre fornecidos pela Interessada.'
+paragraph_five.text ='A Roque Khouri Pinheiro Advogados Associados alerta que qualquer ação judicial implica em risco, estando o interessado ciente principalmente da possibilidade de condenação em honorários advocatícios, conforme previsto no Código de Processo Civil (10% a 20% sobre o valor da causa atualizado), principalmente diante das especificidades da fase atual em que o processo se encontra. Alerta também se tratar de análise e de confecção de peças a serem elaboradas com base no direito, jurisprudência atual e principalmente das informações e documentos que serão sempre fornecidos pelo Interessado.'
 
 #############################################################################
 # II - DA POLÍTICA GERAL DE VALORES - HONORÁRIOS
@@ -430,7 +430,8 @@ format_paragraph(valor_consultivo, 3, 0, 1.5748, 18,18,18)
 paragraph_desconto_consultivo = document.add_paragraph()
 if desconto_percentual_consultivo > 0.0:
     paragraph_desconto_consultivo.add_run("DESCONTO").bold = True
-    paragraph_desconto_consultivo.add_run(f': Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R${total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados.')
+    paragraph_desconto_consultivo.add_run(f': Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R${total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados. Os honorários
+previstos nos itens B2 e B3 serão devidos normalmente.')
     format_paragraph(paragraph_desconto_consultivo, 3, 1.5748, 0, 18,18,18)
 
 
@@ -441,7 +442,7 @@ valor_prolabore_inicial = document.add_paragraph(f'Pró-labore inicial: R${prola
 format_paragraph(valor_prolabore_inicial, 3, 0,1.5748, 18,18,18)
 valor_honorario_manutencao = document.add_paragraph(f"Honorário de manutenção: Isento durante {prolabore_manutencao} meses. Após este período, se o processo perdurar, será devido o valor de {prolabore_manutencao_valor} salário mínimo mensal;")
 format_paragraph(valor_honorario_manutencao, 3, 0,1.5748, 18,18,18)
-valor_honorario_exito = document.add_paragraph(f'Honorários de Êxito: {exito_percentual_formatado}% ({num_extenso_percentual(exito_percentual_formatado)}) do benefício econômico¹ aferido ao final do processo.')
+valor_honorario_exito = document.add_paragraph(f'Honorários de Êxito: {exito_percentual_formatado}% ({num_extenso_percentual(exito_percentual_formatado)}) do benefício econômico aferido ao final do processo. Fica compreendido como benefício econômico todo e qualquer valor que a INTERESSADA receber em razão da propositura da ação ou valor que deixar de pagar.')
 # valor_honorario_exito.add_footnote('Fica compreendido como benefício econômico todo e qualquer valor que a INTERESSADA receber em razão da propositura da ação ou valor que deixar de pagar.') # add a footnote
 format_paragraph(valor_honorario_exito, 3, 0,1.5748, 18,18,18)
 
