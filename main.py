@@ -18,7 +18,7 @@ st.markdown(
     <style>
         [data-testid="stSidebar"] {{
             background-image: url("data:image/png;base64,{encoded_logo}");
-            background-size: 75px;
+            background-size: 120px; #75
             background-repeat: no-repeat;
             background-position: 28px 64px; /* 32px à esquerda e 64px abaixo do topo */
             padding-top: 160x; /* Compensar a altura da logo para que o conteúdo comece abaixo dela */
