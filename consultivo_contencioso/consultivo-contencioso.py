@@ -237,7 +237,7 @@ p_de_format.space_after = Pt(8)
 
 
 paragraph_para = document.add_paragraph()
-paragraph_para.add_run(f'PARA: {nome_cliente} (Interessado(a))').bold = True
+paragraph_para.add_run(f'PARA: {nome_cliente} - Interessado(a)').bold = True
 paragraph_format = paragraph_para.paragraph_format
 paragraph_format.line_spacing = Pt(18)
 paragraph_format.space_after = Pt(48)
