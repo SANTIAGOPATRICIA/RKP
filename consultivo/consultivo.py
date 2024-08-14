@@ -17,7 +17,7 @@ import os
 from tempfile import NamedTemporaryFile
 from utils.funcoes import format_paragraph, add_formatted_text, format_title_centered, \
     format_title_justified, num_extenso, data_extenso, fonte_name_and_size, add_section,\
-    create_paragraph, atualizar_base_dados, num_extenso_percentual, set_table_borders
+    num_extenso_percentual, set_table_borders, obter_texto_parcelas
 
 
 # Expande a largura da tela
@@ -79,7 +79,7 @@ with dados:
     
     st.divider()
     #objeto da proposta
-    input_objeto = st.text_area(label="Objeto(s) da proposta (ENTER para quebra de linha) ", placeholder='Conforme solicitação, apresentamos proposta de honorários para atuação consultiva, referente à ...')
+    input_objeto = st.text_area(label="Objeto(s) da proposta", placeholder='Conforme solicitação, apresentamos proposta de honorários para atuação consultiva, referente à(s) ...')
     resumo_objeto = st.text_area(label="Resumo do(s) objeto(s) (ENTER para quebra de linha)")
 
     perguntas_respostas = {
@@ -292,7 +292,7 @@ textos_paragrafos = []
 texto_padrao = []
 if len(desdobramentos) > 1:
     for p in desdobramentos:
-        paragrafo_ = document.add_paragraph(p)
+        paragrafo_ = document.add_paragraph(f'Conforme solicitação, apresentamos proposta de honorários para atuação consultiva, referentes às {p}')
         format_paragraph(paragrafo_, 3, 1.5748,0, 18,18,18)
         textos_paragrafos.append(paragrafo_.text)
 else:
@@ -442,8 +442,9 @@ format_paragraph(paragraph_three_two, 3, 1.5748,0, 18,18,18)
 
 #Bloco dos valores
 if len(atuacao) > 1:
+    # st.write(df_inputs)
     for idx, row in df_inputs.iterrows():
-        block_three_atuacao = document.add_paragraph(row['objeto'])
+        block_three_atuacao = document.add_paragraph(f"{idx+1}) {row['objeto']}")
         format_paragraph(block_three_atuacao, 3, 1.5748, 0, 18,18,18)
         block_three_hora = document.add_paragraph(f'{row["total-de-horas"]}h estimada para a confecção e revisão')
         format_paragraph(block_three_hora, 3, 1.5748,0, 18,18,18)
@@ -451,6 +452,7 @@ if len(atuacao) > 1:
         format_paragraph(block_three_valor_aplicado, 3, 1.5748,0, 18,18,18)
         block_three_subtotal = document.add_paragraph(f'R${row["subtotal"]} ({row["subtotal-extenso"]}) estimada para a confecção e revisão')
         format_paragraph(block_three_subtotal, 3, 1.5748, 0,18,18,18)
+        
 else:
     for idx, row in df_inputs.iterrows():
         block_three_atuacao = document.add_paragraph(row['objeto'])
@@ -464,15 +466,6 @@ else:
 
         
 #paragrafo III-III
-# Definir a função de concordância nominal para parcelas
-def obter_texto_parcelas(numero):
-    if numero == 1:
-        return 'uma parcela'
-    elif numero == 2:
-        return 'duas parcelas'
-    else:
-        return f"{num2words(numero, lang='pt_BR')} parcelas"
-
 # Inicializar a variável 'parcelas_texto' de acordo com 'numero_parcelas' e 'parcelamento_restante'
 parcelas_texto = obter_texto_parcelas(numero_parcelas)
 
@@ -483,18 +476,26 @@ if parcelamento == 'Entrada + parcelas':
 # Verificar e aplicar o desconto
 if desconto > 0:
     paragraph_three_three = document.add_paragraph()
-    if parcelamento == 'Regular':
+    if parcelamento is None:
+        paragraph_three_three.add_run("DESCONTO").bold = True
+        paragraph_three_three.add_run(
+            f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pago no ato da assinatura desta proposta""".strip()
+        )
+        format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
+    
+    elif parcelamento == 'Regular':
         paragraph_three_three.add_run("DESCONTO").bold = True
         paragraph_three_three.add_run(
             f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pagos em {parcelas_texto} iguais de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
         )
         format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
-    elif parcelamento == 'Entrada + parcelas':
+    else: #parcelamento == 'Entrada + parcelas':
         paragraph_three_three.add_run("DESCONTO").bold = True
         paragraph_three_three.add_run(
-            f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pagos com entrada de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)}) e o restante dividido em {parcelas_texto} de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
+            f""": Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados, a ser pagos com entrada de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)})e o restante dividido em {parcelas_texto} de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
         )
         format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
+       
 else:
     paragraph_three_three = document.add_paragraph()
     if parcelamento == 'Regular':
@@ -506,6 +507,11 @@ else:
     elif parcelamento == 'Entrada + parcelas':
         paragraph_three_three.add_run(
             f"""Para a prestação de serviços advocatícios listada no Tópico I, a Roque Khouri & Pinheiro Advogados Associados estima o pagamento de R$ {valor_entrada_formatado} ({num_extenso(valor_entrada_formatado)}) no ato da assinatura da proposta e o restante dividos em {parcelas_texto} de R$ {valor_parcelamento_formatado} ({num_extenso(valor_parcelamento_formatado)})""".strip()
+        )
+        format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
+    else:
+        paragraph_three_three.add_run(
+            f"""Para a prestação de serviços advocatícios listada no Tópico I, a Roque Khouri & Pinheiro Advogados Associados estima o pagamento de R$ {total_final_formatado} ({num_extenso(total_final_formatado)}) no ato da assinatura da proposta)""".strip()
         )
         format_paragraph(paragraph_three_three, 3, 1.5748, 0, 18, 18, 18)
 
@@ -648,7 +654,7 @@ with desenvolvimento:
     st.write('*Texto padrão*')
     st.write("")
     st.write(title_three.text)
-    # st.write(paragraph_three_one.text)
+    st.write(paragraph_three_one.text)
     st.markdown(f"""
                     <div style="text-align: justify;">
                         {paragraph_three_one.text}
@@ -667,11 +673,13 @@ with desenvolvimento:
         time.sleep(3)
 
     if len(atuacao) > 1:
+        # st.write(df_inputs)
         for idx, row in df_inputs.iterrows():
-            st.write(f'{recuo}{block_three_atuacao.text}')
-            st.write(f'{recuo}{block_three_hora.text}')
-            st.write(f'{recuo}{block_three_valor_aplicado.text}')
-            st.write(f'{recuo}{block_three_subtotal.text}')
+            f"{recuo}{idx+1}) {df_inputs['objeto'][idx]}"
+            f"{recuo}{df_inputs['total-de-horas'][idx]}h estimada para a confecção e revisão"
+            f"{recuo}Valor da hora aplicada: R$ {df_inputs['valor-aplicado'][idx]} ({df_inputs['valor-formatado'][idx]})"
+            f"{recuo}R$ {df_inputs['subtotal'][idx]} ({df_inputs['subtotal-extenso'][idx]}) estimada para a confecção e revisão"
+
     else:
         for idx, row in df_inputs.iterrows():
             st.write(f'{recuo}{block_three_atuacao.text}')
@@ -681,7 +689,7 @@ with desenvolvimento:
 
     # st.write(paragraph_three_three.text)
     st.write("")
-    if parcelamento is not None:
+    if desconto >0:
         st.markdown(f"""
                         <div style="text-align: justify;">
                             {paragraph_three_three.text}
