@@ -420,11 +420,11 @@ else:
 
 #exito
 if tipo_exito == 'benefício econômico':
-    valor_honorario_exito = document.add_paragraph(f'c) Honorários de Êxito: {exito_percentual_formatado}% ({num_extenso_percentual(exito_percentual_formatado)}) do benefício econômico¹ aferido ao final do processo.')
+    valor_honorario_exito = document.add_paragraph(f'c) Honorários de Êxito: {exito_percentual_formatado}% ({num_extenso_percentual(exito_percentual_formatado)}) do benefício econômico aferido ao final do processo. Fica compreendido como benefício econômico todo e qualquer valor que a INTERESSADA receber em razão da propositura da ação ou valor que deixar de pagar.')
     # valor_honorario_exito.add_footnote('Fica compreendido como benefício econômico todo e qualquer valor que a INTERESSADA receber em razão da propositura da ação ou valor que deixar de pagar.') # add a footnote
     format_paragraph(valor_honorario_exito, 3, 0, 1.5748, 18,18,18)
 else:
-    valor_honorario_exito = document.add_paragraph(f'c) Honorários de Êxito: {exito_percentual_formatado}% ({num_extenso_percentual(exito_percentual_formatado)}) {exito_outro_texto}.')
+    valor_honorario_exito = document.add_paragraph(f'c) Honorários de Êxito: {exito_percentual_formatado}% ({num_extenso_percentual(exito_percentual_formatado)}) {exito_outro_texto}. Em caso de acordo parcial, fica estipulado que o êxito poderá ser compatível com a redução que vier a ser atingida.')
     # valor_honorario_exito.add_footnote('Em caso de acordo parcial, fica estipulado que o êxito poderá ser compatível com a redução que vier a ser atingida.') # add a footnote
     format_paragraph(valor_honorario_exito, 3, 0, 1.5748, 18,18,18)
 
