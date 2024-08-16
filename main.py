@@ -143,7 +143,7 @@ especial = st.Page(
 pg = st.navigation(
     {
         "Consultivo": [consultivo, consultivo_contencioso],
-        "Contencioso": [contencioso_proposta]#, contencioso_contrato],
+        "Contencioso": [contencioso_proposta],#, contencioso_contrato],
         "Especial": [especial],
         # "Sair": [logout]  # Adiciona a opção de logout como a última opção
     }
