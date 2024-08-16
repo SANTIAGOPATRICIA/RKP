@@ -123,11 +123,11 @@ contencioso_proposta = st.Page(
     title="Proposta Contencioso", 
     icon="⚖️"
 )
-contencioso_contrato = st.Page(
-    "contencioso/contencioso-contrato-preenchido.py", 
-    title='Contrato preenchido', 
-    icon="⚖️"
-)
+# contencioso_contrato = st.Page(
+#     "contencioso/contencioso-contrato-preenchido.py", 
+#     title='Contrato preenchido', 
+#     icon="⚖️"
+# )
 consultivo_contencioso = st.Page(
     "consultivo_contencioso/consultivo-contencioso.py", 
     title="Proposta Consultivo e Contencioso",
@@ -143,7 +143,7 @@ especial = st.Page(
 pg = st.navigation(
     {
         "Consultivo": [consultivo, consultivo_contencioso],
-        "Contencioso": [contencioso_proposta, contencioso_contrato],
+        "Contencioso": [contencioso_proposta]#, contencioso_contrato],
         "Especial": [especial],
         # "Sair": [logout]  # Adiciona a opção de logout como a última opção
     }
