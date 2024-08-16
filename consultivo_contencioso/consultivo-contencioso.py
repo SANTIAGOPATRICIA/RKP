@@ -494,7 +494,7 @@ paragraph.text = "Atenciosamente,"
 # Adicionar imagem centralizada
 image_paragraph = document.add_paragraph()
 run = image_paragraph.add_run()
-run.add_picture('./img/arp.png', width=Inches(2.0))
+run.add_picture(r"img/arp.png", width=Inches(2.0))
 image_paragraph.alignment = 1  # Centralizado
 image_paragraph.space_before = Pt(64)
 
