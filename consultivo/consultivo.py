@@ -543,13 +543,19 @@ paragraph = document.add_paragraph()
 format_paragraph(paragraph, 3, 1.5748, 0, 18,18,18) 
 paragraph.text = "Atenciosamente,"
 
+# Adicionar imagem centralizada
+image_paragraph = document.add_paragraph()
+run = image_paragraph.add_run()
+run.add_picture('img/arp.png', width=Inches(2.0))
+image_paragraph.alignment = 1  # Centralizado
+image_paragraph.space_before = Pt(64)
 
 # Adicionar parágrafo centralizado
 paragraph = document.add_paragraph()
 paragraph.add_run('Roque Khouri & Pinheiro Advogados Associados \nPaulo R. Roque A. Khouri\nOAB/DF 10.671').bold = True
 paragraph_format = paragraph.paragraph_format
 paragraph_format.alignment = 1  # Centralizado
-paragraph_format.space_before = Pt(64)
+paragraph_format.space_before = Pt(4)
 
 # Adicionar parágrafo para "De acordo:"
 paragraph = document.add_paragraph()
