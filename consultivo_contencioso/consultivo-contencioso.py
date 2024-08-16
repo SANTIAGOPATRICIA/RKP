@@ -430,8 +430,7 @@ format_paragraph(valor_consultivo, 3, 0, 1.5748, 18,18,18)
 paragraph_desconto_consultivo = document.add_paragraph()
 if desconto_percentual_consultivo > 0.0:
     paragraph_desconto_consultivo.add_run("DESCONTO").bold = True
-    paragraph_desconto_consultivo.add_run(f': Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R${total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados. Os honorários
-previstos nos itens B2 e B3 serão devidos normalmente.')
+    paragraph_desconto_consultivo.add_run(f': Tendo em vista a parceria para com o cliente, a Roque Khouri & Pinheiro, por mera liberalidade e apenas no trabalho específico, concede o desconto de {desconto_percentual_formatado}% ({num_extenso_percentual(desconto_percentual_formatado)}) em todos os valores descritos, totalizando assim, R${total_final_formatado} ({num_extenso(total_final_formatado)}) pela prestação de serviços contratados. Os honorários previstos nos itens B2 e B3 serão devidos normalmente.')
     format_paragraph(paragraph_desconto_consultivo, 3, 1.5748, 0, 18,18,18)
 
 
