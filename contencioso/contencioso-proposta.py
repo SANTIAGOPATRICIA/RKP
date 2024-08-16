@@ -4,7 +4,7 @@ import streamlit as st
 from st_pages import add_indentation
 import docx
 from docx import Document
-from docx.shared import Pt
+from docx.shared import Pt, Inches
 from datetime import datetime
 import locale
 import time
