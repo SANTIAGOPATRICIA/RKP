@@ -614,6 +614,11 @@ with desenvolvimento:
     #     st.success('Dados salvos com sucesso!')
     
     #criar um dicionario com os dados de input
+
+    
+    if valor_parcelamento_formatado is None:
+        valor_parcelamento_formatado = ''
+        
     novo_dado = {
         'nome_cliente': nome_cliente,
         'objeto_contencioso': input_contencioso_objeto,
