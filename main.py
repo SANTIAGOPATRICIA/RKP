@@ -119,8 +119,8 @@ consultivo = st.Page(
     default=True
 )
 contencioso_proposta = st.Page(
-    "contencioso/contencioso-proposta.py", 
-    title="Proposta Contencioso", 
+    ".\contencioso\contencioso-proposta.py", 
+    title="Proposta/Contrato Contencioso", 
     icon="⚖️"
 )
 # contencioso_contrato = st.Page(
