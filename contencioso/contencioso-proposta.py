@@ -617,7 +617,7 @@ with desenvolvimento:
 
     
     if parcelamento == None:
-        valor_parcelamento_formatado = ''
+        valor_parcelamento_formatado = '0.00'
         
     novo_dado = {
         'nome_cliente': nome_cliente,
