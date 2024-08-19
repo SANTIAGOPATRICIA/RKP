@@ -258,7 +258,7 @@ title_one = document.add_heading('I - DOS SERVIÇOS A SEREM DESENVOLVIDOS', leve
 format_title_justified(title_one)
 
 #paragrafo objeto
-paragraph_objeto = document.add_paragraph(f'Conforme solicitação, apresentamos proposta de honorários para atuação judicial, em defesa dos interesses de {nome_cliente} {orgao_} {input_contencioso_objeto}, para todo o acompanhamento junto ao poder judiciário, até o julgamento final em {instancia_}.')
+paragraph_objeto = document.add_paragraph(f'Conforme solicitação, apresentamos proposta de honorários para atuação judicial, em defesa dos interesses de {nome_cliente}, perante ao {orgao_},  {input_contencioso_objeto}, para todo o acompanhamento junto ao poder judiciário, até o julgamento final em {instancia_}.')
 format_paragraph(paragraph_objeto,3, 1.5748,0, 18,18,18)
 
 
@@ -562,7 +562,6 @@ with desenvolvimento:
         <p>{recuo}{valor_honorario_exito.text}</p>
         <p><i>Texto padrão sobre os eventuais custos com a contratação de advogads e despesas relativas a custas judiciais</i></p>
         <p>{paragraph_three_four_two.text}</p>
-        # <p>{paragraph_three_four_two.text}</p>
         <p><i>Texto padrão sobre a necessidade de novo valor de honorários se propositura de nova ação judicial.</i></p>        
         <p>{title_iv.text}</p>        
         <p><i>Texto padrão sobre confidencialidade.</i></p>                
