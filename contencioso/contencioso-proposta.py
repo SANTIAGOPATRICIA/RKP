@@ -817,17 +817,17 @@ with desenvolvimento:
     # #exito
     if novo_dado["tipo_exito"] == 'benefício econômico':
         pag2_1_c = document.add_paragraph()
-        full_text = f'c) Honorários de Êxito: {novo_dado["exito_percentual_formatado"]}% ({num_extenso_percentual(novo_dado["exito_percentual_formatado"])}) do benefício econômico¹ aferido ao final do processo.'
+        full_text = f'c) Honorários de Êxito: {novo_dado["exito_percentual_formatado"]}% ({num_extenso_percentual(novo_dado["exito_percentual_formatado"])}) do benefício econômico aferido ao final do processo. Fica compreendido como benefício econômico todo e qualquer valor que a INTERESSADA receber em razão da propositura da ação ou valor que deixar de pagar.'
         bold_text = ['c)']
         add_formatted_text(pag2_1_c, full_text, bold_text)
-        pag2_1_c.add_footnote('Fica compreendido como benefício econômico todo e qualquer valor que a INTERESSADA receber em razão da propositura da ação ou valor que deixar de pagar.') # add a footnote
+        # pag2_1_c.add_footnote('Fica compreendido como benefício econômico todo e qualquer valor que a INTERESSADA receber em razão da propositura da ação ou valor que deixar de pagar.') # add a footnote
         format_paragraph(pag2_1_c, 3, 0, 1.385827, 18,18,18)
     else:
         pag2_1_c = document.add_paragraph()
-        full_text = f'c) Honorários de Êxito: {novo_dado["exito_percentual_formatado"]}% ({num_extenso_percentual(novo_dado["exito_percentual_formatado"])}) do {novo_dado["tipo_exito"]}.'
+        full_text = f'c) Honorários de Êxito: {novo_dado["exito_percentual_formatado"]}% ({num_extenso_percentual(novo_dado["exito_percentual_formatado"])}) do {novo_dado["tipo_exito"]}. {novo_dado["exito_texto"]}.'
         bold_text = ['c)']
         add_formatted_text(pag2_1_c, full_text, bold_text)
-        pag2_1_c.add_footnote(f'{novo_dado["exito_texto"]}.') # add a footnote
+        # pag2_1_c.add_footnote(f'{novo_dado["exito_texto"]}.') # add a footnote
         format_paragraph(pag2_1_c, 3, 0, 1.385827, 18,18,18)
     
     pag2_2 = document.add_paragraph()
