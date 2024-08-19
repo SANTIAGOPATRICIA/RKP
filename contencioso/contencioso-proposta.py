@@ -616,7 +616,7 @@ with desenvolvimento:
     #criar um dicionario com os dados de input
 
     
-    if valor_parcelamento_formatado is None:
+    if parcelamento == None:
         valor_parcelamento_formatado = ''
         
     novo_dado = {
