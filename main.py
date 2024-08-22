@@ -112,13 +112,13 @@ st.markdown(
 
 
 # Criar as páginas necessárias
-# consultivo = st.Page(
-#     "consultivo/consultivo.py", 
-#     title="Proposta Consultivo", 
-#     icon="⚖️", 
-#     default=True
-# )
 consultivo = st.Page(
+    "consultivo/consultivo.py", 
+    title="Proposta Consultivo", 
+    icon="⚖️", 
+    default=True
+)
+consultivo_v2 = st.Page(
     "consultivo/consultivo_valor_por_autacao_profissional.py",
     title='consultivo',
     icon="⚖️", 
@@ -148,7 +148,7 @@ especial = st.Page(
 # Adicionar páginas ao menu de navegação
 pg = st.navigation(
     {
-        "Consultivo": [consultivo, consultivo_contencioso],
+        "Consultivo": [consultivo, consultivo_v2, consultivo_contencioso],
         "Contencioso": [contencioso_proposta],#, contencioso_contrato],
         "Especial": [especial],
         # "Sair": [logout]  # Adiciona a opção de logout como a última opção
