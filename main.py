@@ -112,14 +112,14 @@ st.markdown(
 
 
 # Criar as páginas necessárias
+# consultivo = st.Page(
+#     "consultivo/consultivo.py", 
+#     title="Proposta Consultivo", 
+#     icon="⚖️", 
+#     default=True
+# )
 consultivo = st.Page(
-    "consultivo/consultivo.py", 
-    title="Proposta Consultivo", 
-    icon="⚖️", 
-    default=True
-)
-consultivo_valor_por_profissional = st.Page(
-    ".\consultivo\consultivo_valor_por_autuacao_profissional.py",
+    "consultivo/consultivo_valor_por_autuacao_profissional.py",
     title='consultivo_valor_por_profissional',
     icon="⚖️", 
 )
