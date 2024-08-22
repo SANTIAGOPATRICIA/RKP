@@ -15,7 +15,7 @@ import os
 from tempfile import NamedTemporaryFile
 from utils.funcoes import format_paragraph, add_formatted_text, format_title_centered, \
     format_title_justified, num_extenso, data_extenso, fonte_name_and_size, add_section,\
-    num_extenso_percentual, set_table_borders, obter_texto_parcelas, get_base64_encoded_image
+    num_extenso_percentual, set_table_borders, obter_texto_parcelas
 
 
 try:
