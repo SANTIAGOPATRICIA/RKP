@@ -147,7 +147,7 @@ especial = st.Page(
 
 # Adicionar páginas ao menu de navegação
 navigation_dict = {
-    "Consultivo": [consultivo, consultivo_valor_por_profissional, consultivo_contencioso], #consultivo, 
+    "Consultivo": [consultivo, consultivo_v2, consultivo_contencioso], #consultivo, 
     "Contencioso": [contencioso_proposta],# contencioso_contrato],
     "Especial": [especial],
     # "Sair": [logout]  # Adiciona a opção de logout como a última opção
