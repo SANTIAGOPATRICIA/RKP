@@ -119,7 +119,7 @@ st.markdown(
 #     default=True
 # )
 consultivo = st.Page(
-    "consultivo/consultivo_valor_por_autuacao_profissional.py",
+    "consultivo/consultivo_valor_por_autacao_profissional.py",
     title='consultivo',
     icon="⚖️", 
     default = True
