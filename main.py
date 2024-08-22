@@ -69,5 +69,5 @@ navigation_dict = {
     "Especial": [especial]
 }
 
-pg = st.navigation(navigation_dict)
+pg = st.navigation(navigation_dict, position="sidebar")
 pg.run()
