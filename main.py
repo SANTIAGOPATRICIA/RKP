@@ -40,8 +40,7 @@ consultivo = st.Page(
 consultivo_v2 = st.Page(
     "consultivo/consultivo_valor_por_autacao_profissional.py",
     title='consultivo',
-    icon="⚖️", 
-    default = True
+    icon="⚖️"
 )
 #Contencioso
 contencioso_proposta = st.Page(
