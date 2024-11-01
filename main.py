@@ -57,7 +57,7 @@ consultivo_contencioso = st.Page(
 #especial - proteção patrimonial
 especial = st.Page(
     "Especial/especial.py", 
-    title="Proposta - Proteção Patrimonial", 
+    title="Proposta - Reorganização Patrimonial", 
     icon="⚖️"
 )
 
